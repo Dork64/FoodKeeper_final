@@ -40,7 +40,7 @@
         android:text="Удалить" />
 
     <Button
-        android:id="@+id/btnMoveProduct"
+        android:id="@+id/btnMoveToShoppingList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Переместить" />
