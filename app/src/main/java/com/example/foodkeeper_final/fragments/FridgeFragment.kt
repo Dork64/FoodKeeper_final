@@ -1,6 +1,5 @@
 package com.example.foodkeeper_final.fragments
 
-import FridgeAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodkeeper_final.R
+import com.example.foodkeeper_final.adapters.FridgeAdapter
 
 class FridgeFragment : Fragment() {
 
