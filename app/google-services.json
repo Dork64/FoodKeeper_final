@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "292099635098",
+    "firebase_url": "https://foodkeeperfinal-default-rtdb.firebaseio.com",
+    "project_id": "foodkeeperfinal",
+    "storage_bucket": "foodkeeperfinal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292099635098:android:26b1cda9f74595e91e2c23",
+        "android_client_info": {
+          "package_name": "com.example.foodkeeper_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292099635098-cg5rvjabb3m8q8h25j136el3crsdr8jj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodkeeper_final",
+            "certificate_hash": "e12fb64d1528de9ecb1f9b89894fab35b2bab2ce"
+          }
+        },
+        {
+          "client_id": "292099635098-q510irb0dsnq9p9cqtrqmu8plv9piuqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQrYZ2SJRsKsA_EV4j8WNwHYmpOonW3Dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292099635098-q510irb0dsnq9p9cqtrqmu8plv9piuqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
