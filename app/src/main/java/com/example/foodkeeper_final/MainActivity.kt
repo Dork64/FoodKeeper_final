@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.fridge -> {
-                    loadFragment(FridgeFragment())
+                    loadFragment(FridgeFragment<Any>())
                     true
                 }
                 R.id.profile -> {
