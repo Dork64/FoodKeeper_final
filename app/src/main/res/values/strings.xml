@@ -2,4 +2,13 @@
     <string name="app_name">FoodKeeper_final</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="category_list">
+        <item>Все</item>
+        <item>Фрукты</item>
+        <item>Овощи</item>
+        <item>Мясо</item>
+        <item>Молочные продукты</item>
+    </string-array>
+
 </resources>
