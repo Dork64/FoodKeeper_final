@@ -1,5 +1,3 @@
-package com.example.foodkeeper_final.adapters
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

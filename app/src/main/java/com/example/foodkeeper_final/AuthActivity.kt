@@ -93,12 +93,12 @@ class AuthActivity : AppCompatActivity() {
 
     private fun addUserToDatabase() {
         val userId = auth.currentUser?.uid // Получаем UID текущего пользователя
-
         // Проверка, что пользователь авторизован
         if (userId != null) {
             val user = User(
                 email = auth.currentUser?.email ?: "Не указан",
-                shoppingList = emptyList()
+                shoppingList = emptyList(),
+                fridgeList = emptyList()
             )
 
             // Получаем ссылку на базу данных
