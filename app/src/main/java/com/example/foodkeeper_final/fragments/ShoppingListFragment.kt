@@ -24,10 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ShoppingListFragment<T> : Fragment() {
 
@@ -56,7 +56,8 @@ class ShoppingListFragment<T> : Fragment() {
         adapter = ShoppingListAdapter(
             shoppingList,
             onEdit = { item -> showEditItemDialog(item) }, // Редактирование
-            onDelete = { item, position -> deleteShoppingItem(item, position) } // Удаление
+            onDelete = { item, position -> deleteShoppingItem(item, position) }, // Удаление
+            onMove = { item, position -> moveToFridge(item, position) } // Перемещение в холодильник
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -360,5 +361,32 @@ class ShoppingListFragment<T> : Fragment() {
                 Log.e("FirebaseError", "Ошибка обновления: ${exception.message}")
                 Toast.makeText(requireContext(), "Не удалось обновить элемент", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Функция для перемещения элемента в холодильник
+    private fun moveToFridge(item: ShoppingItem, position: Int) {
+        // Получаем ссылки на базы данных
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val fridgeRef = FirebaseDatabase.getInstance().getReference("Users")
+            .child(userId)
+            .child("fridgeList")
+        val shoppingRef = FirebaseDatabase.getInstance().getReference("Users")
+            .child(userId)
+            .child("shoppingList")
+
+        // Получаем ключ текущего элемента
+        val itemKey = item.id
+
+        // Копируем элемент в холодильник с тем же ключом
+        fridgeRef.child(itemKey).setValue(item).addOnSuccessListener {
+            // После успешного копирования удаляем из списка покупок
+            shoppingRef.child(itemKey).removeValue().addOnSuccessListener {
+                Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { e ->
+                Toast.makeText(context, "Ошибка при удалении из списка: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { e ->
+            Toast.makeText(context, "Ошибка при перемещении: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

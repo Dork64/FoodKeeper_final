@@ -13,13 +13,14 @@ import com.example.foodkeeper_final.models.ShoppingItem
 class ShoppingListAdapter(
     private val items: MutableList<ShoppingItem>,
     private val onEdit: (ShoppingItem) -> Unit, // Callback для редактирования
-    private val onDelete: (ShoppingItem, Int) -> Unit // Callback для удаления
+    private val onDelete: (ShoppingItem, Int) -> Unit, // Callback для удаления
+    private val onMove: (ShoppingItem, Int) -> Unit // Callback для перемещения с позицией
 ) : RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_shopping_list, parent, false)
-        return ViewHolder(view, onEdit, onDelete)
+        return ViewHolder(view, onEdit, onDelete, onMove)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -32,12 +33,14 @@ class ShoppingListAdapter(
     class ViewHolder(
         itemView: View,
         private val onEdit: (ShoppingItem) -> Unit,
-        private val onDelete: (ShoppingItem, Int) -> Unit
+        private val onDelete: (ShoppingItem, Int) -> Unit,
+        private val onMove: (ShoppingItem, Int) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val ivIcon: ImageView = itemView.findViewById(R.id.ivItemIcon)
         private val tvName: TextView = itemView.findViewById(R.id.tvItemName)
         private val ivEdit: ImageView = itemView.findViewById(R.id.ivEditItem) // Кнопка "Редактировать"
         private val ivDelete: ImageView = itemView.findViewById(R.id.ivDeleteItem) // Кнопка "Удалить"
+        private val ivMove: ImageView = itemView.findViewById(R.id.ivMoveToFridge) // Кнопка "Переместить"
 
         fun bind(item: ShoppingItem, position: Int) {
             tvName.text = item.name
@@ -55,6 +58,7 @@ class ShoppingListAdapter(
             // Обработчики кнопок
             ivEdit.setOnClickListener { onEdit(item) }
             ivDelete.setOnClickListener { onDelete(item, position) }
+            ivMove.setOnClickListener { onMove(item, position) }
         }
     }
 }
