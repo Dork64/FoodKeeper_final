@@ -29,10 +29,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class FridgeFragment<T> : Fragment() {
 
@@ -411,26 +411,24 @@ class FridgeFragment<T> : Fragment() {
             return
         }
 
-        // Удаляем элемент из холодильника
-        val fridgeItemRef = databaseReference.child(item.id)
-        fridgeItemRef.removeValue()
+        // Создаем элемент в списке покупок с тем же ключом
+        val shoppingItemRef = shoppingListRef.child(item.id)
+        shoppingItemRef.setValue(item)
             .addOnSuccessListener {
-                // Добавляем элемент в shoppingList
-                val shoppingItemRef = shoppingListRef.push() // Генерируем уникальный ключ
-                item.id = shoppingItemRef.key ?: return@addOnSuccessListener // Устанавливаем новый ID
-                shoppingItemRef.setValue(item)
+                // После успешного добавления удаляем из холодильника
+                databaseReference.child(item.id).removeValue()
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Элемент перемещён в список покупок", Toast.LENGTH_SHORT).show()
-                        filterFridgeList(currentCategory) // Обновляем отображение списка холодильника
+                        filterFridgeList(currentCategory)
                     }
                     .addOnFailureListener { exception ->
-                        Log.e("FirebaseError", "Ошибка перемещения в список покупок: ${exception.message}")
-                        Toast.makeText(requireContext(), "Ошибка при добавлении в список покупок", Toast.LENGTH_SHORT).show()
+                        Log.e("FirebaseError", "Ошибка удаления из холодильника: ${exception.message}")
+                        Toast.makeText(requireContext(), "Ошибка при удалении из холодильника", Toast.LENGTH_SHORT).show()
                     }
             }
             .addOnFailureListener { exception ->
-                Log.e("FirebaseError", "Ошибка удаления из холодильника: ${exception.message}")
-                Toast.makeText(requireContext(), "Ошибка при удалении из холодильника", Toast.LENGTH_SHORT).show()
+                Log.e("FirebaseError", "Ошибка перемещения в список покупок: ${exception.message}")
+                Toast.makeText(requireContext(), "Ошибка при добавлении в список покупок", Toast.LENGTH_SHORT).show()
             }
     }
 
