@@ -106,7 +106,7 @@ class ShoppingListFragment<T> : Fragment() {
 
     // Загрузка списка покупок из Firebase Realtime Database
     private fun loadUserShoppingList() {
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 shoppingList.clear()
                 originalShoppingList.clear()
@@ -126,6 +126,35 @@ class ShoppingListFragment<T> : Fragment() {
                 if (shoppingList.isEmpty()) {
                     showEmptyListMessage()
                 }
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Ошибка загрузки списка: ${error.message}")
+            }
+        })
+    }
+
+    private fun updateShoppingList() {
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                shoppingList.clear()
+                originalShoppingList.clear()
+
+                if (snapshot.exists()) {
+                    for (itemSnapshot in snapshot.children) {
+                        val shoppingItem = itemSnapshot.getValue(ShoppingItem::class.java)
+                        if (shoppingItem != null) {
+                            shoppingList.add(shoppingItem)
+                            originalShoppingList.add(shoppingItem)
+                        }
+                    }
+                }
+
+                if (shoppingList.isEmpty()) {
+                    showEmptyListMessage()
+                }
+                filterShoppingList(currentCategory)
                 adapter.notifyDataSetChanged()
             }
 
@@ -205,10 +234,8 @@ class ShoppingListFragment<T> : Fragment() {
             val selectedProductName = suggestionsList[position]
             val selectedProduct = productsMap[selectedProductName]
             if (selectedProduct != null) {
-                shoppingList.add(selectedProduct)
                 addShoppingItem(selectedProduct)
-                filterShoppingList(currentCategory)
-
+                updateShoppingList()
                 // Обновляем список последних продуктов
                 if (!recentProductsList.contains(selectedProductName)) {
                     recentProductsList.add(selectedProductName)
@@ -218,8 +245,6 @@ class ShoppingListFragment<T> : Fragment() {
                 }
                 saveRecentProducts()
 
-                adapter.notifyItemInserted(shoppingList.size - 1)
-                recyclerView.smoothScrollToPosition(shoppingList.size - 1)
                 Toast.makeText(requireContext(), "Продукт добавлен: $selectedProductName", Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
@@ -283,7 +308,7 @@ class ShoppingListFragment<T> : Fragment() {
 
         itemRef.setValue(item)
             .addOnSuccessListener {
-                filterShoppingList(currentCategory)
+                updateShoppingList()
                 Log.d("Firebase", "Продукт добавлен: ${item.name}")
             }
             .addOnFailureListener { exception ->
@@ -306,6 +331,9 @@ class ShoppingListFragment<T> : Fragment() {
             .setMessage("Вы уверены, что хотите удалить ${item.name} из списка?")
             .setPositiveButton("Да") { _, _ ->
                 // Если подтверждено, удаляем элемент
+                shoppingList.removeAt(position)
+                originalShoppingList.remove(item)
+
                 val itemRef = databaseReference.child(item.id)
 
                 itemRef.removeValue()
@@ -381,8 +409,8 @@ class ShoppingListFragment<T> : Fragment() {
         fridgeRef.child(itemKey).setValue(item).addOnSuccessListener {
             // После успешного копирования удаляем из списка покупок
             shoppingRef.child(itemKey).removeValue().addOnSuccessListener {
+                updateShoppingList()
                 Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
-                filterShoppingList(currentCategory)
             }.addOnFailureListener { e ->
                 Toast.makeText(context, "Ошибка при удалении из списка: ${e.message}", Toast.LENGTH_SHORT).show()
             }

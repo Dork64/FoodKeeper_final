@@ -142,6 +142,35 @@ class FridgeFragment<T> : Fragment() {
         })
     }
 
+    private fun updateFridgeList() {
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                fridgeList.clear()
+                originalFridgeList.clear()
+
+                if (snapshot.exists()) {
+                    for (itemSnapshot in snapshot.children) {
+                        val fridgeItem = itemSnapshot.getValue(FridgeItem::class.java)
+                        if (fridgeItem != null) {
+                            fridgeList.add(fridgeItem)
+                            originalFridgeList.add(fridgeItem)
+                        }
+                    }
+                }
+
+                if (fridgeList.isEmpty()) {
+                    showEmptyListMessage()
+                }
+                filterFridgeList(currentCategory)
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Ошибка загрузки списка: ${error.message}")
+            }
+        })
+    }
+
     private fun filterFridgeList(category: String) {
         fridgeList.clear()
         if (category == "Все") {
@@ -154,8 +183,11 @@ class FridgeFragment<T> : Fragment() {
 
     // Метод для отображения сообщения, что холодильник пуст
     private fun showEmptyListMessage() {
-        Toast.makeText(requireContext(), "Ваш холодильник пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+        if (isAdded) {  // Проверка, прикреплен ли фрагмент к активности
+            Toast.makeText(requireContext(), "Ваш холодильник пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
     private fun showAddItemDialog() {
         val dialogView = LayoutInflater.from(requireContext())
@@ -212,9 +244,8 @@ class FridgeFragment<T> : Fragment() {
             val selectedProductName = suggestionsList[position]
             val selectedProduct = productsMap[selectedProductName]
             if (selectedProduct != null) {
-                fridgeList.add(selectedProduct)
                 addFridgeItem(selectedProduct)
-                filterFridgeList(currentCategory)
+                updateFridgeList()
 
                 // Обновляем список последних продуктов
                 if (!recentProductsList.contains(selectedProductName)) {
@@ -225,8 +256,6 @@ class FridgeFragment<T> : Fragment() {
                 }
                 saveRecentProducts()
 
-                adapter.notifyItemInserted(fridgeList.size - 1)
-                recyclerView.smoothScrollToPosition(fridgeList.size - 1)
                 Toast.makeText(requireContext(), "Продукт добавлен: $selectedProductName", Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
@@ -290,7 +319,7 @@ class FridgeFragment<T> : Fragment() {
 
         itemRef.setValue(item)
             .addOnSuccessListener {
-                filterFridgeList(currentCategory)
+                updateFridgeList()
                 Log.d("Firebase", "Продукт добавлен: ${item.name}")
             }
             .addOnFailureListener { exception ->
@@ -309,6 +338,9 @@ class FridgeFragment<T> : Fragment() {
             .setMessage("Вы уверены, что хотите удалить ${item.name} из списка?")
             .setPositiveButton("Да") { _, _ ->
                 // Если подтверждено, удаляем элемент
+                fridgeList.removeIf { it.name == item.name }
+                originalFridgeList.remove(item)
+
                 val itemRef = databaseReference.child(item.id)
 
                 itemRef.removeValue()
@@ -416,10 +448,11 @@ class FridgeFragment<T> : Fragment() {
         shoppingItemRef.setValue(item)
             .addOnSuccessListener {
                 // После успешного добавления удаляем из холодильника
+                fridgeList.removeIf { it.name == item.name }
+                originalFridgeList.remove(item)
                 databaseReference.child(item.id).removeValue()
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Элемент перемещён в список покупок", Toast.LENGTH_SHORT).show()
-                        filterFridgeList(currentCategory)
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseError", "Ошибка удаления из холодильника: ${exception.message}")
