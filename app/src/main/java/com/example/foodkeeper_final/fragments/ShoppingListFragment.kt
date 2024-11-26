@@ -481,8 +481,8 @@ class ShoppingListFragment<T> : Fragment() {
             // После успешного копирования удаляем из списка покупок
             shoppingList.removeAt(position)
             shoppingRef.child(itemKey).removeValue().addOnSuccessListener {
-                updateShoppingList()
                 Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
+                updateShoppingList()
             }.addOnFailureListener { e ->
                 Toast.makeText(context, "Ошибка при удалении из списка: ${e.message}", Toast.LENGTH_SHORT).show()
             }

@@ -18,13 +18,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.FridgeAdapter
-import com.example.foodkeeper_final.adapters.ShoppingListAdapter
 import com.example.foodkeeper_final.models.FridgeItem
-import com.example.foodkeeper_final.models.ShoppingItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -354,7 +351,7 @@ class FridgeFragment<T> : Fragment() {
                         Toast.makeText(requireContext(), "Не удалось удалить элемент", Toast.LENGTH_SHORT).show()
                     }
             }
-            .setNegativeButton("Нет", null)
+            .setNegativeButton("Нет") {_, _ -> updateFridgeList()}
             .show()
     }
 
