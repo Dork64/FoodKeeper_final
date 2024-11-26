@@ -247,7 +247,9 @@ class ShoppingListFragment<T> : Fragment() {
 
     // Метод для отображения сообщения, что список пуст
     private fun showEmptyListMessage() {
-        Toast.makeText(requireContext(), "Ваш список покупок пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+        if (isAdded) {  // Проверка, прикреплен ли фрагмент к активности
+            Toast.makeText(requireContext(), "Ваш список пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showAddItemDialog() {
@@ -263,6 +265,7 @@ class ShoppingListFragment<T> : Fragment() {
         listViewSuggestions.adapter = suggestionsAdapter
 
         // Сразу заполняем список последними продуктами
+
         suggestionsList.clear()
         suggestionsList.addAll(recentProductsList)
         filterShoppingList(currentCategory)
@@ -380,7 +383,6 @@ class ShoppingListFragment<T> : Fragment() {
 
         itemRef.setValue(item)
             .addOnSuccessListener {
-                productsMap[item.name.toLowerCase()] = item
                 updateShoppingList()
                 Log.d("Firebase", "Продукт добавлен: ${item.name}")
             }

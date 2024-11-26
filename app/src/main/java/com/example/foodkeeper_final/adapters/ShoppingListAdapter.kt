@@ -11,7 +11,7 @@ import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.models.ShoppingItem
 
 class ShoppingListAdapter(
-    private val items: MutableList<ShoppingItem>,
+    private val items: List<ShoppingItem>,
     private val onEdit: (ShoppingItem) -> Unit, // Callback для редактирования
     private val onDelete: (ShoppingItem, Int) -> Unit, // Callback для удаления
     private val onMove: (ShoppingItem, Int) -> Unit // Callback для перемещения с позицией
@@ -24,8 +24,8 @@ class ShoppingListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
-        holder.bind(item, position)
+        val product = items[position]
+        holder.bind(product)
     }
 
     override fun getItemCount(): Int = items.size
@@ -42,7 +42,7 @@ class ShoppingListAdapter(
         private val ivDelete: ImageView = itemView.findViewById(R.id.ivDeleteItem) // Кнопка "Удалить"
         private val ivMove: ImageView = itemView.findViewById(R.id.ivMoveToFridge) // Кнопка "Переместить"
 
-        fun bind(item: ShoppingItem, position: Int) {
+        fun bind(item: ShoppingItem) {
             tvName.text = item.name
 
             if (item.imageUrl.isNotEmpty()) {
