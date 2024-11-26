@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.FridgeAdapter
 import com.example.foodkeeper_final.models.FridgeItem
+import com.example.foodkeeper_final.models.ShoppingItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -41,7 +42,6 @@ class FridgeFragment<T> : Fragment() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var firestore: FirebaseFirestore
     private val suggestionsList = mutableListOf<String>()
-    private val productsMap = mutableMapOf<String, FridgeItem>()
     private val originalFridgeList = mutableListOf<FridgeItem>() // Исходный список
     private var currentCategory: String = "Все" // По умолчанию категория "Все"
 
@@ -114,7 +114,6 @@ class FridgeFragment<T> : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 fridgeList.clear()
                 originalFridgeList.clear()
-                productsMap.clear()
 
                 if (snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
@@ -122,7 +121,6 @@ class FridgeFragment<T> : Fragment() {
                         if (fridgeItem != null) {
                             fridgeList.add(fridgeItem)
                             originalFridgeList.add(fridgeItem)
-                            productsMap[fridgeItem.name.toLowerCase()] = fridgeItem
                         }
                     }
                 }
@@ -239,26 +237,59 @@ class FridgeFragment<T> : Fragment() {
         // Обработка выбора продукта из списка
         listViewSuggestions.setOnItemClickListener { _, _, position, _ ->
             val selectedProductName = suggestionsList[position]
-            val selectedProduct = productsMap[selectedProductName]
-            if (selectedProduct != null) {
-                addFridgeItem(selectedProduct)
-                updateFridgeList()
 
-                // Обновляем список последних продуктов
-                if (!recentProductsList.contains(selectedProductName)) {
-                    recentProductsList.add(selectedProductName)
-                    if (recentProductsList.size > 5) { // Ограничиваем размер списка
-                        recentProductsList.removeAt(0)
+            // Ищем продукт по имени
+            loadProductFromFirestore(selectedProductName) { selectedProduct ->
+                if (selectedProduct != null) {
+                    // Продукт найден, добавляем его в список покупок
+                    addFridgeItem(selectedProduct)
+
+                    // Обновляем список последних продуктов
+                    if (!recentProductsList.contains(selectedProductName)) {
+                        recentProductsList.add(selectedProductName)
+                        if (recentProductsList.size > 5) { // Ограничиваем размер списка
+                            recentProductsList.removeAt(0)
+                        }
+                    }
+                    saveRecentProducts()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Продукт добавлен: $selectedProductName",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // Продукт не найден
+                    Toast.makeText(requireContext(), "Продукт не найден", Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun loadProductFromFirestore(productName: String, callback: (FridgeItem?) -> Unit) {
+        val lowerCaseProductName = productName.lowercase()
+
+        firestore.collection("products")
+            .get()
+            .addOnSuccessListener { documents ->
+                // Ищем среди всех документов
+                for (document in documents) {
+                    val product = document.toObject(FridgeItem::class.java)
+                    val productNameInDoc = product.name?.lowercase()
+
+                    if (productNameInDoc == lowerCaseProductName) {
+                        callback(product)  // Если нашли продукт с нужным названием, возвращаем его
+                        return@addOnSuccessListener
                     }
                 }
-                saveRecentProducts()
-
-                Toast.makeText(requireContext(), "Продукт добавлен: $selectedProductName", Toast.LENGTH_SHORT).show()
+                callback(null)  // Если не нашли, возвращаем null
             }
-            dialog.dismiss()
-        }
-
-        dialog.show()
+            .addOnFailureListener {
+                Log.e("FirestoreError", "Ошибка при поиске продукта по имени $productName: ${it.message}")
+                callback(null)  // В случае ошибки тоже возвращаем null
+            }
     }
 
     private fun saveRecentProducts() {
@@ -293,13 +324,11 @@ class FridgeFragment<T> : Fragment() {
             .get()
             .addOnSuccessListener { documents ->
                 val suggestions = mutableListOf<FridgeItem>()
-                productsMap.clear()
 
                 for (document in documents) {
                     val product = document.toObject(FridgeItem::class.java)
                     if (product != null && product.name.toLowerCase().startsWith(query)) { // Точное совпадение первой буквы
                         suggestions.add(product)
-                        productsMap[product.name.toLowerCase()] = product
                     }
                 }
                 callback(suggestions)

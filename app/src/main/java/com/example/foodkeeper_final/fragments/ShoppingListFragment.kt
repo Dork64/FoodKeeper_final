@@ -45,7 +45,6 @@ class ShoppingListFragment<T> : Fragment() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var firestore: FirebaseFirestore
     private val suggestionsList = mutableListOf<String>()
-    private val productsMap = mutableMapOf<String, ShoppingItem>()
     private val originalShoppingList = mutableListOf<ShoppingItem>() // Исходный список
     private var currentCategory: String = "Все" // По умолчанию категория "Все"
 
@@ -181,7 +180,6 @@ class ShoppingListFragment<T> : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 shoppingList.clear()
                 originalShoppingList.clear()
-                productsMap.clear()
 
                 if (snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
@@ -189,7 +187,6 @@ class ShoppingListFragment<T> : Fragment() {
                         if (shoppingItem != null) {
                             shoppingList.add(shoppingItem)
                             originalShoppingList.add(shoppingItem)
-                            productsMap[shoppingItem.name.toLowerCase()] = shoppingItem
                         }
                     }
                 }
@@ -307,26 +304,64 @@ class ShoppingListFragment<T> : Fragment() {
         // Обработка выбора продукта из списка
         listViewSuggestions.setOnItemClickListener { _, _, position, _ ->
             val selectedProductName = suggestionsList[position]
-            val selectedProduct = productsMap[selectedProductName]
-            if (selectedProduct != null) {
-                addShoppingItem(selectedProduct)
-                updateShoppingList()
-                // Обновляем список последних продуктов
-                if (!recentProductsList.contains(selectedProductName)) {
-                    recentProductsList.add(selectedProductName)
-                    if (recentProductsList.size > 5) { // Ограничиваем размер списка
-                        recentProductsList.removeAt(0)
+
+            // Ищем продукт по имени
+            loadProductFromFirestore(selectedProductName) { selectedProduct ->
+                if (selectedProduct != null) {
+                    // Продукт найден, добавляем его в список покупок
+                    addShoppingItem(selectedProduct)
+
+                    // Обновляем список последних продуктов
+                    if (!recentProductsList.contains(selectedProductName)) {
+                        recentProductsList.add(selectedProductName)
+                        if (recentProductsList.size > 5) { // Ограничиваем размер списка
+                            recentProductsList.removeAt(0)
+                        }
                     }
+                    saveRecentProducts()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Продукт добавлен: $selectedProductName",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // Продукт не найден
+                    Toast.makeText(requireContext(), "Продукт не найден", Toast.LENGTH_SHORT).show()
                 }
-                saveRecentProducts()
-
-                Toast.makeText(requireContext(), "Продукт добавлен: $selectedProductName", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
             }
-            dialog.dismiss()
         }
-
         dialog.show()
     }
+
+    // Измененная версия loadProductFromFirestore, которая возвращает объект через callback
+    private fun loadProductFromFirestore(productName: String, callback: (ShoppingItem?) -> Unit) {
+        val lowerCaseProductName = productName.lowercase()
+
+        firestore.collection("products")
+            .get()
+            .addOnSuccessListener { documents ->
+                // Ищем среди всех документов
+                for (document in documents) {
+                    val product = document.toObject(ShoppingItem::class.java)
+                    val productNameInDoc = product.name?.lowercase()  // Предполагаем, что у объекта ShoppingItem есть поле name
+
+                    if (productNameInDoc == lowerCaseProductName) {
+                        callback(product)  // Если нашли продукт с нужным названием, возвращаем его
+                        return@addOnSuccessListener
+                    }
+                }
+                callback(null)  // Если не нашли, возвращаем null
+            }
+            .addOnFailureListener {
+                Log.e("FirestoreError", "Ошибка при поиске продукта по имени $productName: ${it.message}")
+                callback(null)  // В случае ошибки тоже возвращаем null
+            }
+    }
+
+
+
 
     private fun saveRecentProducts() {
         val recentProductsRef = databaseReference.parent?.child("recentProducts")
@@ -360,13 +395,11 @@ class ShoppingListFragment<T> : Fragment() {
             .get()
             .addOnSuccessListener { documents ->
                 val suggestions = mutableListOf<ShoppingItem>()
-                productsMap.clear()
 
                 for (document in documents) {
                     val product = document.toObject(ShoppingItem::class.java)
                     if (product != null && product.name.toLowerCase().startsWith(query)) { // Точное совпадение первой буквы
                         suggestions.add(product)
-                        productsMap[product.name.toLowerCase()] = product
                     }
                 }
                 callback(suggestions)
