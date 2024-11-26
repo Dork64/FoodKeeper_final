@@ -301,6 +301,7 @@ class ShoppingListFragment<T> : Fragment() {
         })
 
         // Обработка выбора продукта из списка
+        // Обработка выбора продукта из списка
         listViewSuggestions.setOnItemClickListener { _, _, position, _ ->
             val selectedProductName = suggestionsList[position]
             val selectedProduct = productsMap[selectedProductName]
@@ -379,6 +380,7 @@ class ShoppingListFragment<T> : Fragment() {
 
         itemRef.setValue(item)
             .addOnSuccessListener {
+                productsMap[item.name.toLowerCase()] = item
                 updateShoppingList()
                 Log.d("Firebase", "Продукт добавлен: ${item.name}")
             }

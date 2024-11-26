@@ -446,11 +446,12 @@ class FridgeFragment<T> : Fragment() {
             .addOnSuccessListener {
                 // После успешного добавления удаляем из холодильника
                 fridgeList.removeIf { it.name == item.name }
+                filterFridgeList(currentCategory)
                 originalFridgeList.remove(item)
                 updateFridgeList()
                 databaseReference.child(item.id).removeValue()
                     .addOnSuccessListener {
-
+                        filterFridgeList(currentCategory)
                         Toast.makeText(requireContext(), "Элемент перемещён в список покупок", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener { exception ->
