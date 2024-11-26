@@ -1,6 +1,10 @@
 package com.example.foodkeeper_final.fragments
 
 import android.app.AlertDialog
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,7 +18,9 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodkeeper_final.R
@@ -61,6 +67,71 @@ class ShoppingListFragment<T> : Fragment() {
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // Перемещение не обрабатывается
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = shoppingList[position]
+
+                    when (direction) {
+                        ItemTouchHelper.RIGHT -> moveToFridge(item, position) // Перемещение в холодильник
+                        ItemTouchHelper.LEFT -> deleteShoppingItem(item, position) // Удаление элемента
+                    }
+                }
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val icon: Drawable?
+                val background: ColorDrawable
+
+                if (dX > 0) { // Свайп вправо
+                    background = ColorDrawable(Color.GREEN)
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_move)
+                } else { // Свайп влево
+                    background = ColorDrawable(Color.RED)
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
+                }
+
+                val iconMargin = (itemView.height - icon!!.intrinsicHeight) / 2
+                val iconTop = itemView.top + iconMargin
+                val iconBottom = iconTop + icon.intrinsicHeight
+
+                if (dX > 0) { // Отрисовка для свайпа вправо
+                    background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                    icon.setBounds(itemView.left + iconMargin, iconTop, itemView.left + iconMargin + icon.intrinsicWidth, iconBottom)
+                } else { // Отрисовка для свайпа влево
+                    background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    icon.setBounds(itemView.right - iconMargin - icon.intrinsicWidth, iconTop, itemView.right - iconMargin, iconBottom)
+                }
+
+                background.draw(c)
+                icon.draw(c)
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        })
+
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
 
         val spinnerCategory: Spinner = view.findViewById(R.id.spinnerCategory)
 
@@ -347,7 +418,7 @@ class ShoppingListFragment<T> : Fragment() {
                         Toast.makeText(requireContext(), "Не удалось удалить элемент", Toast.LENGTH_SHORT).show()
                     }
             }
-            .setNegativeButton("Нет", null)
+            .setNegativeButton("Нет") {_, _ -> updateShoppingList()}
             .show()
     }
 
@@ -408,6 +479,7 @@ class ShoppingListFragment<T> : Fragment() {
         // Копируем элемент в холодильник с тем же ключом
         fridgeRef.child(itemKey).setValue(item).addOnSuccessListener {
             // После успешного копирования удаляем из списка покупок
+            shoppingList.removeAt(position)
             shoppingRef.child(itemKey).removeValue().addOnSuccessListener {
                 updateShoppingList()
                 Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
