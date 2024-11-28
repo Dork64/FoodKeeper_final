@@ -42,8 +42,9 @@ android {
 dependencies {
 
     implementation("com.google.firebase:firebase-auth")
-
+    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
