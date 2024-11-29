@@ -36,7 +36,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
+        <action
+            android:id="@+id/action_profile_to_sharedAccess"
+            app:destination="@id/sharedAccessFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -50,5 +56,11 @@
         android:name="com.example.foodkeeper_final.fragments.AccountFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_account" />
+
+    <fragment
+        android:id="@+id/sharedAccessFragment"
+        android:name="com.example.foodkeeper_final.fragments.SharedAccessFragment"
+        android:label="Shared Access"
+        tools:layout="@layout/fragment_shared_access" />
 
 </navigation>

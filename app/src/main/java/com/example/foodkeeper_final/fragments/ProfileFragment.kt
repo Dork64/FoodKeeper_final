@@ -32,7 +32,7 @@ class ProfileFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.btnSharing).setOnClickListener {
-            // TODO: Implement sharing functionality
+            findNavController().navigate(R.id.action_profile_to_sharedAccess)
         }
 
         view.findViewById<Button>(R.id.btnHelp).setOnClickListener {
