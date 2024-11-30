@@ -1,11 +1,13 @@
 package com.example.foodkeeper_final
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
@@ -13,6 +15,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+
+        // Проверяем авторизацию до установки интерфейса
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            // Если пользователь не авторизован - отправляем на экран входа
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+            return
+        }
+
+        // Если пользователь авторизован - показываем основной интерфейс
         setContentView(R.layout.activity_main)
         
         bottomNav = findViewById(R.id.bottomNav)
