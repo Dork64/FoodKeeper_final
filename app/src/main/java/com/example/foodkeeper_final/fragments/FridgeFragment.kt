@@ -412,19 +412,59 @@ class FridgeFragment<T> : Fragment() {
 
     private fun showEditItemDialog(item: FridgeItem) {
         val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_add_item, null)
+            .inflate(R.layout.dialog_edit_item, null) // Используем новый макет
 
-        val editTextName = dialogView.findViewById<EditText>(R.id.etSearchProduct)
-        editTextName.setText(item.name) // Заполняем текущие данные
+        val editTextName = dialogView.findViewById<EditText>(R.id.etEditName)
+        val datePickerButton = dialogView.findViewById<Button>(R.id.btnEditSelectDate)
+
+        // Заполняем текущее название
+        editTextName.setText(item.name)
         editTextName.setSelection(item.name.length)
+
+        // Отображаем текущую дату срока годности, если она уже установлена
+        if (item.expiryDays > 0) {
+            val expiryDate = LocalDate.now().plusDays(item.expiryDays.toLong() - 1)
+            datePickerButton.text = expiryDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+        } else {
+            datePickerButton.text = "Выберите дату"
+        }
+
+        // Настраиваем выбор даты
+        datePickerButton.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    val today = LocalDate.now()
+
+                    // Рассчитываем количество дней от сегодняшнего дня до выбранной даты
+                    val daysBetween = ChronoUnit.DAYS.between(today, selectedDate)
+
+                    if (daysBetween >= 0) {
+                        item.expiryDays = daysBetween.toInt()  + 1 // Сохраняем количество дней
+                        datePickerButton.text = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                    } else {
+                        Toast.makeText(requireContext(), "Выбрана прошедшая дата!", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+        }
+
+        // Создаём и отображаем диалог
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Редактировать продукт")
             .setView(dialogView)
             .setPositiveButton("Сохранить") { _, _ ->
                 val updatedName = editTextName.text.toString()
+
                 if (updatedName.isNotEmpty()) {
                     item.name = updatedName
-                    updateFridgeItem(item)
+                    updateFridgeItem(item) // Обновляем данные в хранилище
                 } else {
                     Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
                 }
@@ -434,6 +474,7 @@ class FridgeFragment<T> : Fragment() {
 
         dialog.show()
     }
+
 
     private fun updateFridgeItem(item: FridgeItem) {
         val itemRef = databaseReference.child(item.id) // Ссылка на элемент в Firebase
