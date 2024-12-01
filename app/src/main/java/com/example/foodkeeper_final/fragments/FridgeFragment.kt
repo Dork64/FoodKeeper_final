@@ -258,13 +258,13 @@ class FridgeFragment<T> : Fragment() {
                     // Продукт найден, добавляем его в список покупок
                     showFreshnessDialog(selectedProduct)
 
-                    // Обновляем список последних продуктов
-                    if (!recentProductsList.contains(selectedProductName)) {
-                        recentProductsList.add(selectedProductName)
-                        if (recentProductsList.size > 5) { // Ограничиваем размер списка
-                            recentProductsList.removeAt(0)
-                        }
+                    // Перемещаем продукт в начало списка последних продуктов
+                    recentProductsList.remove(selectedProductName)
+                    recentProductsList.add(0, selectedProductName)
+                    if (recentProductsList.size > 4) {
+                        recentProductsList.removeAt(4)
                     }
+                    suggestionsAdapter.notifyDataSetChanged()
                     saveRecentProducts()
 
                     Toast.makeText(

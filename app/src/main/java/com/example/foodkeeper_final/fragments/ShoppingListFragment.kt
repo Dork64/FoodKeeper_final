@@ -313,7 +313,6 @@ class ShoppingListFragment<T> : Fragment() {
         })
 
         // Обработка выбора продукта из списка
-        // Обработка выбора продукта из списка
         listViewSuggestions.setOnItemClickListener { _, _, position, _ ->
             val selectedProductName = suggestionsList[position]
 
@@ -323,13 +322,13 @@ class ShoppingListFragment<T> : Fragment() {
                     // Продукт найден, добавляем его в список покупок
                     addShoppingItem(selectedProduct)
 
-                    // Обновляем список последних продуктов
-                    if (!recentProductsList.contains(selectedProductName)) {
-                        recentProductsList.add(selectedProductName)
-                        if (recentProductsList.size > 5) { // Ограничиваем размер списка
-                            recentProductsList.removeAt(0)
-                        }
+                    // Перемещаем продукт в начало списка последних продуктов
+                    recentProductsList.remove(selectedProductName)
+                    recentProductsList.add(0, selectedProductName)
+                    if (recentProductsList.size > 4) {
+                        recentProductsList.removeAt(4)
                     }
+                    suggestionsAdapter.notifyDataSetChanged()
                     saveRecentProducts()
 
                     Toast.makeText(
@@ -344,6 +343,7 @@ class ShoppingListFragment<T> : Fragment() {
                 dialog.dismiss()
             }
         }
+
         dialog.show()
     }
 
@@ -392,6 +392,7 @@ class ShoppingListFragment<T> : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 recentProductsList.clear()
                 snapshot.children.mapNotNullTo(recentProductsList) { it.getValue(String::class.java) }
+
                 Log.d("Firebase", "Список последних продуктов загружен: $recentProductsList")
             }
 
