@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.ShoppingListAdapter
+import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -501,6 +502,42 @@ class ShoppingListFragment<T> : Fragment() {
 
     // Функция для перемещения элемента в холодильник
     private fun moveToFridge(item: ShoppingItem, position: Int) {
+        if (item.needsFreshnessCheck) {
+            showFreshnessDialog(item, position)
+        } else {
+            // Если проверка свежести не требуется, используем стандартный срок хранения
+            addToFridge(item, position, item.defaultStorageDays)
+        }
+    }
+
+    private fun showFreshnessDialog(item: ShoppingItem, position: Int) {
+        val options = when (item.category.lowercase()) {
+            "фрукты", "овощи" -> arrayOf("Свежий", "Немного лежалый", "Перезрелый")
+            "хлеб" -> arrayOf("Свежий", "Вчерашний")
+            else -> arrayOf("Свежий", "Нормальный", "Требует скорого употребления")
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Выберите состояние продукта")
+            .setItems(options) { dialog, which ->
+                // Рассчитываем срок хранения на основе выбранного состояния
+                val storageDays = calculateStorageDays(item.defaultStorageDays, which)
+                addToFridge(item, position, storageDays)
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun calculateStorageDays(defaultDays: Int, freshnessLevel: Int): Int {
+        return when (freshnessLevel) {
+            0 -> defaultDays // Свежий - полный срок
+            1 -> (defaultDays * 0.7).toInt() // Средний - 70% от срока
+            2 -> (defaultDays * 0.3).toInt() // Требует скорого употребления - 30% от срока
+            else -> defaultDays
+        }
+    }
+
+    private fun addToFridge(item: ShoppingItem, position: Int, storageDays: Int) {
         // Получаем ссылки на базы данных
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val fridgeRef = FirebaseDatabase.getInstance().getReference("Users")
@@ -510,14 +547,23 @@ class ShoppingListFragment<T> : Fragment() {
             .child(userId)
             .child("shoppingList")
 
-        // Получаем ключ текущего элемента
-        val itemKey = item.id
+        // Создаем объект FridgeItem
+        val fridgeItem = FridgeItem(
+            id = item.id,
+            name = item.name,
+            category = item.category,
+            imageUrl = item.imageUrl,
+            defaultStorageDays = item.defaultStorageDays,
+            addedDate = System.currentTimeMillis(),
+            expiryDays = storageDays,
+            needsFreshnessCheck = item.needsFreshnessCheck
+        )
 
-        // Копируем элемент в холодильник с тем же ключом
-        fridgeRef.child(itemKey).setValue(item).addOnSuccessListener {
+        // Копируем элемент в холодильник
+        fridgeRef.child(item.id).setValue(fridgeItem).addOnSuccessListener {
             // После успешного копирования удаляем из списка покупок
             shoppingList.removeAt(position)
-            shoppingRef.child(itemKey).removeValue().addOnSuccessListener {
+            shoppingRef.child(item.id).removeValue().addOnSuccessListener {
                 Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
                 updateShoppingList()
             }.addOnFailureListener { e ->

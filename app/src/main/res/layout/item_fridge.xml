@@ -26,4 +26,14 @@
         android:textSize="14sp"
         android:textColor="@android:color/black"
         android:gravity="center" />
+
+    <TextView
+        android:id="@+id/expiryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Осталось"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:gravity="center" />
 </LinearLayout>

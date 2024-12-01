@@ -469,12 +469,23 @@ class FridgeFragment<T> : Fragment() {
             return
         }
 
+
+        // Создаем объект ShoppingItem
+        val shoppingItem = ShoppingItem(
+            id = item.id,
+            name = item.name,
+            category = item.category,
+            imageUrl = item.imageUrl,
+            defaultStorageDays = item.defaultStorageDays,
+            needsFreshnessCheck = item.needsFreshnessCheck
+        )
+
         // Создаем элемент в списке покупок с тем же ключом
-        val shoppingItemRef = shoppingListRef.child(item.id)
-        shoppingItemRef.setValue(item)
+        val shoppingItemRef = shoppingListRef.child(shoppingItem.id)
+        shoppingItemRef.setValue(shoppingItem)
             .addOnSuccessListener {
                 // После успешного добавления удаляем из холодильника
-                fridgeList.removeIf { it.name == item.name }
+                fridgeList.removeIf { it.name == shoppingItem.name }
                 filterFridgeList(currentCategory)
                 originalFridgeList.remove(item)
                 updateFridgeList()

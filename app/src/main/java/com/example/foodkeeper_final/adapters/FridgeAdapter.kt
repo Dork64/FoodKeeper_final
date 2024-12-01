@@ -1,5 +1,6 @@
 package com.example.foodkeeper_final.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ class FridgeAdapter(
     private val items: List<FridgeItem>,
     private val onEdit: (FridgeItem) -> Unit,
     private val onDelete: (FridgeItem) -> Unit,
-    private val onItemClick: (FridgeItem) -> Unit // Новый параметр для обработки клика на изображение
+    private val onItemClick: (FridgeItem) -> Unit
 ) : RecyclerView.Adapter<FridgeAdapter.FridgeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FridgeViewHolder {
@@ -33,11 +34,31 @@ class FridgeAdapter(
     inner class FridgeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val productImage: ImageView = itemView.findViewById(R.id.productImage)
         private val productName: TextView = itemView.findViewById(R.id.productName)
+        private val expiryInfo: TextView = itemView.findViewById(R.id.expiryInfo)
 
 
         fun bind(product: FridgeItem) {
             // Отображаем название продукта
             productName.text = product.name
+
+            // Отображаем информацию о сроке годности
+            val remainingDays = product.getRemainingDays()
+            val expiryText = when {
+                product.isExpired() -> "Срок годности истек!"
+                remainingDays == 0 -> "Истекает сегодня!"
+                remainingDays == 1 -> "Истекает завтра!"
+                else -> "Осталось дней: $remainingDays"
+            }
+
+            expiryInfo.text = expiryText
+
+            // Устанавливаем цвет текста в зависимости от оставшегося срока
+            expiryInfo.setTextColor(when {
+                product.isExpired() -> Color.RED
+                remainingDays == 2 -> Color.parseColor("#FFA500") // Оранжевый
+                remainingDays <= 1 -> Color.RED
+                else -> Color.parseColor("#4CAF50") // Зеленый
+            })
 
             // Загружаем изображение с помощью Glide
             Glide.with(itemView.context)
