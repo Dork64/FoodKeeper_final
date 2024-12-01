@@ -6,9 +6,8 @@ data class FridgeItem(
     val category: String = "",
     val imageUrl: String = "",
     val addedDate: Long = 0, // Timestamp когда продукт был добавлен в холодильник
-    val expiryDays: Int = 0,
+    var expiryDays: Int = 0,
     val defaultStorageDays: Int = 0,
-    val needsFreshnessCheck: Boolean = false
 ){
 
     fun getExpiryDate(): Long = addedDate + (expiryDays * 24 * 60 * 60 * 1000L)

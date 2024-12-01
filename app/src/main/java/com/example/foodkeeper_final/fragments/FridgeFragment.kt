@@ -1,6 +1,8 @@
 package com.example.foodkeeper_final.fragments
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,10 +14,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +36,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Locale
 
 class FridgeFragment<T> : Fragment() {
 
@@ -46,6 +58,7 @@ class FridgeFragment<T> : Fragment() {
     private var currentCategory: String = "Все" // По умолчанию категория "Все"
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -184,6 +197,7 @@ class FridgeFragment<T> : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showAddItemDialog() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_item, null)
@@ -242,7 +256,7 @@ class FridgeFragment<T> : Fragment() {
             loadProductFromFirestore(selectedProductName) { selectedProduct ->
                 if (selectedProduct != null) {
                     // Продукт найден, добавляем его в список покупок
-                    addFridgeItem(selectedProduct)
+                    showFreshnessDialog(selectedProduct)
 
                     // Обновляем список последних продуктов
                     if (!recentProductsList.contains(selectedProductName)) {
@@ -340,13 +354,25 @@ class FridgeFragment<T> : Fragment() {
 
     // Добавление товара в список покупок
     private fun addFridgeItem(item: FridgeItem) {
-        val itemRef = databaseReference.push() // Генерация уникального ключа
-        item.id = itemRef.key ?: return // Устанавливаем ID товара
 
-        itemRef.setValue(item)
+        // Создаем объект FridgeItem
+        val fridgeItem = FridgeItem(
+            id = item.id,
+            name = item.name,
+            category = item.category,
+            imageUrl = item.imageUrl,
+            defaultStorageDays = item.defaultStorageDays,
+            addedDate = System.currentTimeMillis(),
+            expiryDays = item.expiryDays
+        )
+
+        val itemRef = databaseReference.push() // Генерация уникального ключа
+        fridgeItem.id = itemRef.key ?: return // Устанавливаем ID товара
+
+        itemRef.setValue(fridgeItem)
             .addOnSuccessListener {
                 updateFridgeList()
-                Log.d("Firebase", "Продукт добавлен: ${item.name}")
+                Log.d("Firebase", "Продукт добавлен: ${fridgeItem.name}")
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка добавления: ${exception.message}")
@@ -423,17 +449,23 @@ class FridgeFragment<T> : Fragment() {
                 Toast.makeText(requireContext(), "Не удалось обновить элемент", Toast.LENGTH_SHORT).show()
             }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showProductDetailsDialog(item: FridgeItem) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_product_details, null)
 
         val textViewProductName = dialogView.findViewById<TextView>(R.id.tvProductName)
         val textViewProductCategory = dialogView.findViewById<TextView>(R.id.tvProductCategory)
+        val textViewProductExpiry = dialogView.findViewById<TextView>(R.id.tvProductExpiry)
         val btnEditProduct = dialogView.findViewById<Button>(R.id.btnEditProduct)
         val btnDeleteProduct = dialogView.findViewById<Button>(R.id.btnDeleteProduct)
         val btnMoveToShoppingList = dialogView.findViewById<Button>(R.id.btnMoveToShoppingList)
 
         textViewProductName.text = item.name
         textViewProductCategory.text = "Категория: ${item.category}"
+        val today = LocalDate.now()
+        val expiryDate = today.plusDays(item.expiryDays.toLong() - 1)
+        textViewProductExpiry.text = "Срок годности до: ${expiryDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}"
+
 
         val dialog = AlertDialog.Builder(context)
             .setTitle("Информация о продукте")
@@ -476,8 +508,7 @@ class FridgeFragment<T> : Fragment() {
             name = item.name,
             category = item.category,
             imageUrl = item.imageUrl,
-            defaultStorageDays = item.defaultStorageDays,
-            needsFreshnessCheck = item.needsFreshnessCheck
+            defaultStorageDays = item.defaultStorageDays
         )
 
         // Создаем элемент в списке покупок с тем же ключом
@@ -505,6 +536,121 @@ class FridgeFragment<T> : Fragment() {
             }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showFreshnessDialog(item: FridgeItem) {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_freshness_check, null)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        val rgExpiryChoice = dialogView.findViewById<RadioGroup>(R.id.rgExpiryChoice)
+        val layoutFreshnessStates = dialogView.findViewById<LinearLayout>(R.id.layoutFreshnessStates)
+        val layoutManualDate = dialogView.findViewById<LinearLayout>(R.id.layoutManualDate)
+        val spinnerFreshnessStates = dialogView.findViewById<Spinner>(R.id.spinnerFreshnessStates)
+        val etExpiryDate = dialogView.findViewById<EditText>(R.id.etExpiryDate)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+
+        // Настраиваем спиннер с состояниями свежести
+        val options = when (item.category.lowercase()) {
+            "фрукты", "овощи" -> arrayOf("Свежий", "Немного лежалый", "Перезрелый")
+            "хлеб" -> arrayOf("Свежий", "Вчерашний")
+            else -> arrayOf("Свежий", "Нормальный", "Требует скорого употребления")
+        }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerFreshnessStates.adapter = adapter
+
+        // Обработчик переключения между режимами выбора срока
+        rgExpiryChoice.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbFreshnessDefault -> {
+                    layoutFreshnessStates.visibility = View.GONE
+                    layoutManualDate.visibility = View.GONE
+                }
+                R.id.rbFreshnessState -> {
+                    layoutFreshnessStates.visibility = View.VISIBLE
+                    layoutManualDate.visibility = View.GONE
+                }
+                R.id.rbManualDate -> {
+                    layoutFreshnessStates.visibility = View.GONE
+                    layoutManualDate.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        // Настраиваем выбор даты
+        etExpiryDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    etExpiryDate.setText(dateFormat.format(calendar.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+            updateFridgeList()
+        }
+
+        btnConfirm.setOnClickListener {
+            when (rgExpiryChoice.checkedRadioButtonId) {
+                R.id.rbFreshnessDefault -> {
+                    item.expiryDays = item.defaultStorageDays
+                    addFridgeItem(item)
+                }
+                R.id.rbFreshnessState -> {
+                    // Рассчитываем срок хранения на основе выбранного состояния
+                    val storageDays = calculateStorageDays(item.defaultStorageDays, spinnerFreshnessStates.selectedItemPosition)
+                    item.expiryDays = storageDays
+                    addFridgeItem(item)
+                }
+                R.id.rbManualDate -> {
+                    val dateStr = etExpiryDate.text.toString()
+                    if (dateStr.isNotEmpty()) {
+                        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        try {
+                            val expiryDate = dateFormat.parse(dateStr)
+                            val today = Calendar.getInstance().time
+                            val diffInDays = ChronoUnit.DAYS.between(today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()) + 1
+                            item.expiryDays = diffInDays.toInt()
+                            addFridgeItem(item)
+
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "Неверный формат даты", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Пожалуйста, выберите дату", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                }
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun calculateStorageDays(defaultDays: Int, freshnessLevel: Int): Int {
+        return when (freshnessLevel) {
+            0 -> defaultDays // Свежий - полный срок
+            1 -> (defaultDays * 0.7).toInt() // Средний - 70% от срока
+            2 -> (defaultDays * 0.3).toInt() // Требует скорого употребления - 30% от срока
+            else -> defaultDays
+        }
+    }
 
 
 }

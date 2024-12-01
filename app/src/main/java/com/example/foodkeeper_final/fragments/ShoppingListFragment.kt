@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,6 +23,7 @@ import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -40,6 +42,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
@@ -509,14 +513,10 @@ class ShoppingListFragment<T> : Fragment() {
 
     // Функция для перемещения элемента в холодильник
     private fun moveToFridge(item: ShoppingItem, position: Int) {
-        if (item.needsFreshnessCheck) {
             showFreshnessDialog(item, position)
-        } else {
-            // Если проверка свежести не требуется, используем стандартный срок хранения
-            addToFridge(item, position, item.defaultStorageDays)
-        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showFreshnessDialog(item: ShoppingItem, position: Int) {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_freshness_check, null)
@@ -546,6 +546,10 @@ class ShoppingListFragment<T> : Fragment() {
         // Обработчик переключения между режимами выбора срока
         rgExpiryChoice.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
+                R.id.rbFreshnessDefault -> {
+                    layoutFreshnessStates.visibility = View.GONE
+                    layoutManualDate.visibility = View.GONE
+                }
                 R.id.rbFreshnessState -> {
                     layoutFreshnessStates.visibility = View.VISIBLE
                     layoutManualDate.visibility = View.GONE
@@ -580,6 +584,9 @@ class ShoppingListFragment<T> : Fragment() {
 
         btnConfirm.setOnClickListener {
             when (rgExpiryChoice.checkedRadioButtonId) {
+                R.id.rbFreshnessDefault -> {
+                    addToFridge(item, position, item.defaultStorageDays )
+                }
                 R.id.rbFreshnessState -> {
                     // Рассчитываем срок хранения на основе выбранного состояния
                     val storageDays = calculateStorageDays(item.defaultStorageDays, spinnerFreshnessStates.selectedItemPosition)
@@ -592,7 +599,8 @@ class ShoppingListFragment<T> : Fragment() {
                         try {
                             val expiryDate = dateFormat.parse(dateStr)
                             val today = Calendar.getInstance().time
-                            val diffInDays = ((expiryDate?.time ?: 0) - today.time) / (1000 * 60 * 60 * 24)
+                            val diffInDays = ChronoUnit.DAYS.between(today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()) + 1
                             addToFridge(item, position, diffInDays.toInt())
                         } catch (e: Exception) {
                             Toast.makeText(requireContext(), "Неверный формат даты", Toast.LENGTH_SHORT).show()
@@ -637,8 +645,7 @@ class ShoppingListFragment<T> : Fragment() {
             imageUrl = item.imageUrl,
             defaultStorageDays = item.defaultStorageDays,
             addedDate = System.currentTimeMillis(),
-            expiryDays = storageDays,
-            needsFreshnessCheck = item.needsFreshnessCheck
+            expiryDays = storageDays
         )
 
         // Копируем элемент в холодильник
