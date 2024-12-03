@@ -2,6 +2,7 @@ package com.example.foodkeeper_final.fragments
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -141,6 +142,7 @@ class FridgeFragment<T> : Fragment() {
                 if (fridgeList.isEmpty()) {
                     showEmptyListMessage()
                 }
+                filterFridgeList(currentCategory)
                 adapter.notifyDataSetChanged()
             }
 
@@ -169,7 +171,9 @@ class FridgeFragment<T> : Fragment() {
                 if (fridgeList.isEmpty()) {
                     showEmptyListMessage()
                 }
+
                 filterFridgeList(currentCategory)
+
                 adapter.notifyDataSetChanged()
             }
 
@@ -180,11 +184,23 @@ class FridgeFragment<T> : Fragment() {
     }
 
     private fun filterFridgeList(category: String) {
+        if (!isAdded) return // Проверяем, что фрагмент всё ещё активен
         fridgeList.clear()
+        val prefs = requireContext().getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
+        val autoSort = prefs.getBoolean("auto_sort", false)
+
         if (category == "Все") {
             fridgeList.addAll(originalFridgeList) // Возвращаем все элементы
+            if (autoSort) {
+                Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
+                fridgeList.sortBy { it.expiryDays }
+            }
         } else {
             fridgeList.addAll(originalFridgeList.filter { it.category == category }) // Фильтруем по категории
+            if (autoSort) {
+                Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
+                fridgeList.sortBy { it.expiryDays }
+            }
         }
         adapter.notifyDataSetChanged() // Обновляем адаптер
     }
@@ -213,7 +229,7 @@ class FridgeFragment<T> : Fragment() {
         // Сразу заполняем список последними продуктами
         suggestionsList.clear()
         suggestionsList.addAll(recentProductsList)
-        filterFridgeList(currentCategory)
+        updateFridgeList()
         suggestionsAdapter.notifyDataSetChanged()
 
         // Создаем и отображаем диалог

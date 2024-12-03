@@ -648,7 +648,6 @@ class ShoppingListFragment<T> : Fragment() {
             addedDate = System.currentTimeMillis(),
             expiryDays = storageDays
         )
-
         // Копируем элемент в холодильник
         fridgeRef.child(item.id).setValue(fridgeItem).addOnSuccessListener {
             // После успешного копирования удаляем из списка покупок
