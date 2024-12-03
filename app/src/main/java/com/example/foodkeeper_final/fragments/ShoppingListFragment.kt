@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodkeeper_final.MainActivity
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.ShoppingListAdapter
 import com.example.foodkeeper_final.models.FridgeItem
@@ -180,11 +181,15 @@ class ShoppingListFragment<T> : Fragment() {
         if (currentUser == null) {
             throw IllegalStateException("Пользователь не авторизован")
         }
-        val currentUserUid = currentUser.uid
+
+        val currentUserUid = MainActivity.CURRENT_USER_ID
+            ?: throw IllegalStateException("Не удалось получить идентификатор пользователя")
+
         return FirebaseDatabase.getInstance().getReference("Users")
             .child(currentUserUid)
             .child("shoppingList")
     }
+
 
     // Загрузка списка покупок из Firebase Realtime Database
     private fun loadUserShoppingList() {

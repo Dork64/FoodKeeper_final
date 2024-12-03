@@ -23,50 +23,12 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Состав семьи"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_profile"
-                    android:background="@android:color/darker_gray"
-                    app:shapeAppearanceOverlay="@style/CircleImageView"
-                    android:layout_marginEnd="8dp"/>
-
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/addMemberButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_add"
-                    app:fabSize="mini"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="НАСТРОЙКА СОВМЕСТНОГО ДОСТУПА"
-                android:textSize="12sp"
-                android:textColor="?android:textColorSecondary"
-                android:layout_marginBottom="8dp"/>
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -75,39 +37,85 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Здесь будет текст"
-                        android:textSize="16sp"/>
+                        android:text="Пользователи"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="16dp"
+                        android:scrollbars="none">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Здесь будет текст Здесь будет текст Здесь будет текст Здесь будет текст Здесь будет текст"
-                        android:textSize="12sp"
-                        android:textColor="?android:textColorSecondary"
-                        android:layout_marginTop="4dp"/>
+                        <LinearLayout
+                            android:id="@+id/usersContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- Текущий пользователь -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="8dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/currentUserIcon"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:background="@color/accent_color"
+                                    android:padding="12dp"
+                                    app:shapeAppearanceOverlay="@style/CircleImageView"
+                                    app:srcCompat="@drawable/ic_profile"
+                                    android:tint="@android:color/white"/>
+
+                                <TextView
+                                    android:id="@+id/currentUserEmail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:textSize="12sp"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"/>
+                            </LinearLayout>
+
+                            <!-- Контейнер для членов семьи -->
+                            <LinearLayout
+                                android:id="@+id/familyMembersContainer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"/>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/familyMemberInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addFamilyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Добавить семью"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginTop="8dp"/>
+                android:text="Добавить члена семьи"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeFamilyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Удалить семью"
+                android:layout_marginTop="8dp"
+                android:text="Удалить члена семьи"
                 android:textColor="@android:color/holo_red_dark"
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
 

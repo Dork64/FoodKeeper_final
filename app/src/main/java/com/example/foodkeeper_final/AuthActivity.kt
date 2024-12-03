@@ -1,6 +1,8 @@
 package com.example.foodkeeper_final
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -13,7 +15,10 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
@@ -25,6 +30,12 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+
+        // Очищаем сохраненный ID при входе в AuthActivity
+        getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            .edit()
+            .remove("selected_user_id")
+            .apply()
 
         // Обработчики нажатий
         binding.btnLogin?.setOnClickListener { loginWithEmailAndPassword() }
@@ -63,9 +74,7 @@ class AuthActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 progressDialog.dismiss()
                 if (task.isSuccessful) {
-                    Snackbar.make(binding.root, "Вход выполнен успешно", Snackbar.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    checkFamilyMembership()
                 } else {
                     when (task.exception) {
                         is FirebaseAuthInvalidUserException ->
@@ -159,7 +168,7 @@ class AuthActivity : AppCompatActivity() {
             showErrorSnackbar("Введите email для восстановления пароля")
             return
         }
-        
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showErrorSnackbar("Введите корректный email адрес")
             return
@@ -183,9 +192,9 @@ class AuthActivity : AppCompatActivity() {
                     ).show()
                 } else {
                     when (resetTask.exception) {
-                        is FirebaseAuthInvalidUserException -> 
+                        is FirebaseAuthInvalidUserException ->
                             showErrorSnackbar("Пользователь с таким email не найден")
-                        is FirebaseAuthInvalidCredentialsException -> 
+                        is FirebaseAuthInvalidCredentialsException ->
                             showErrorSnackbar("Некорректный формат email")
                         is FirebaseTooManyRequestsException ->
                             showErrorSnackbar("Слишком много попыток. Попробуйте позже")
@@ -228,5 +237,76 @@ class AuthActivity : AppCompatActivity() {
         } else {
             showErrorSnackbar("Ошибка: пользователь не авторизован")
         }
+    }
+
+    private fun checkFamilyMembership() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            showErrorSnackbar("Ошибка: пользователь не авторизован")
+            return
+        }
+
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.reference.child("Users")
+
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var familyOwnerData: Pair<String, String>? = null // Pair of userId and email
+
+                // Ищем пользователя в семейных списках
+                for (userSnapshot in snapshot.children) {
+                    val familySnapshot = userSnapshot.child("family")
+                    for (familyMember in familySnapshot.children) {
+                        val memberEmail = familyMember.child("email").getValue(String::class.java)
+                        if (memberEmail == currentUser.email) {
+                            val ownerEmail = userSnapshot.child("email").getValue(String::class.java)
+                            familyOwnerData = Pair(userSnapshot.key ?: "", ownerEmail ?: "")
+                            break
+                        }
+                    }
+                    if (familyOwnerData != null) break
+                }
+
+                if (familyOwnerData != null) {
+                    showAccountChoiceDialog(familyOwnerData)
+                } else {
+                    proceedToMainActivity(currentUser.uid)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                showErrorSnackbar("Ошибка при проверке семейного доступа: ${error.message}")
+                proceedToMainActivity(currentUser.uid)
+            }
+        })
+    }
+
+    private fun showAccountChoiceDialog(familyOwnerData: Pair<String, String>) {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            showErrorSnackbar("Ошибка: пользователь не авторизован")
+            return
+        }
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Выберите аккаунт")
+            .setMessage("Вы являетесь членом семьи пользователя ${familyOwnerData.second}")
+            .setPositiveButton("Войти в семейный список") { _, _ ->
+                proceedToMainActivity(familyOwnerData.first)
+            }
+            .setNegativeButton("Войти в личный список") { _, _ ->
+                proceedToMainActivity(currentUser.uid)
+            }
+            .setCancelable(false)
+            .create()
+            .show()
+    }
+
+    private fun proceedToMainActivity(userId: String) {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("SELECTED_USER_ID", userId)
+        }
+        startActivity(intent)
+        finish()
     }
 }

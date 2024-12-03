@@ -13,9 +13,25 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
+    
+    companion object {
+        var CURRENT_USER_ID: String? = null
+            set(value) {
+                field = value
+                // При изменении ID сохраняем его в SharedPreferences
+                value?.let { id ->
+                    instance?.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                        ?.edit()
+                        ?.putString("selected_user_id", id)
+                        ?.apply()
+                }
+            }
+        private var instance: MainActivity? = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
         FirebaseApp.initializeApp(this)
 
         // Загружаем и применяем сохранённую тему
@@ -27,9 +43,16 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
+        // Получаем выбранный userId из Intent или из SharedPreferences
+        CURRENT_USER_ID = intent.getStringExtra("SELECTED_USER_ID") ?: run {
+            getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                .getString("selected_user_id", null)
+        }
+
         // Проверяем авторизацию до установки интерфейса
-        if (FirebaseAuth.getInstance().currentUser == null) {
-            // Если пользователь не авторизован - отправляем на экран входа
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null || CURRENT_USER_ID == null) {
+            // Если пользователь не авторизован или нет выбранного userId - отправляем на экран входа
             startActivity(Intent(this, AuthActivity::class.java))
             finish()
             return
@@ -47,5 +70,12 @@ class MainActivity : AppCompatActivity() {
 
         // Связываем BottomNavigationView с NavController
         bottomNav.setupWithNavController(navController)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) {
+            instance = null
+        }
     }
 }
