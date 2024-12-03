@@ -138,7 +138,6 @@ class FridgeFragment<T> : Fragment() {
                         }
                     }
                 }
-
                 if (fridgeList.isEmpty()) {
                     showEmptyListMessage()
                 }
@@ -157,7 +156,6 @@ class FridgeFragment<T> : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 fridgeList.clear()
                 originalFridgeList.clear()
-
                 if (snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
                         val fridgeItem = itemSnapshot.getValue(FridgeItem::class.java)
@@ -188,18 +186,19 @@ class FridgeFragment<T> : Fragment() {
         fridgeList.clear()
         val prefs = requireContext().getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
         val autoSort = prefs.getBoolean("auto_sort", false)
-
         if (category == "Все") {
             fridgeList.addAll(originalFridgeList) // Возвращаем все элементы
             if (autoSort) {
                 Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
                 fridgeList.sortBy { it.expiryDays }
+                transferExpiredItems()
             }
         } else {
             fridgeList.addAll(originalFridgeList.filter { it.category == category }) // Фильтруем по категории
             if (autoSort) {
                 Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
                 fridgeList.sortBy { it.expiryDays }
+                transferExpiredItems()
             }
         }
         adapter.notifyDataSetChanged() // Обновляем адаптер
@@ -456,13 +455,8 @@ class FridgeFragment<T> : Fragment() {
 
                     // Рассчитываем количество дней от сегодняшнего дня до выбранной даты
                     val daysBetween = ChronoUnit.DAYS.between(today, selectedDate)
-
-                    if (daysBetween >= 0) {
                         item.expiryDays = daysBetween.toInt()  + 1 // Сохраняем количество дней
                         datePickerButton.text = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-                    } else {
-                        Toast.makeText(requireContext(), "Выбрана прошедшая дата!", Toast.LENGTH_SHORT).show()
-                    }
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -709,5 +703,19 @@ class FridgeFragment<T> : Fragment() {
         }
     }
 
-
+    private fun transferExpiredItems() {
+        val prefs = requireContext().getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
+        val autoTransfer = prefs.getBoolean("auto_transfer", false)
+        Log.e("transfer", "идет идет")
+        if (autoTransfer) {
+            val expiredItems = fridgeList.filter { it.expiryDays <= 0 }
+            expiredItems.forEach { item ->
+                moveItemToShoppingList(item)
+            }
+            if (expiredItems.isNotEmpty()) {
+                adapter.notifyDataSetChanged()
+                Toast.makeText(requireContext(), "Истекшие продукты перемещены в список покупок.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

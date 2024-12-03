@@ -25,6 +25,13 @@ class SettingsFragment : Fragment() {
             prefs.edit().putBoolean("auto_sort", isChecked).apply()
         }
 
+        val autoTransferSwitch = view.findViewById<SwitchMaterial>(R.id.autoTransferSwitch)
+        autoTransferSwitch.isChecked = prefs.getBoolean("auto_transfer", false)
+
+        autoTransferSwitch.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("auto_transfer", isChecked).apply()
+        }
+
         return view
     }
 }
