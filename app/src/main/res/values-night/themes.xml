@@ -2,6 +2,23 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.FoodKeeper_final" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:windowBackground">@color/background_color</item>
+        <item name="colorPrimary">@color/button_background</item>
+        <item name="colorPrimaryVariant">@color/button_background_secondary</item>
+        <item name="colorOnPrimary">@color/button_text</item>
+        <item name="colorSecondary">@color/shop_item_color</item>
+        <item name="colorOnSecondary">@color/secondary_text</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="colorSurface">@color/surface_color</item>
+        
+        <!-- Material Design 3 attributes -->
+        <item name="colorPrimaryContainer">@color/button_background</item>
+        <item name="colorOnPrimaryContainer">@color/button_text</item>
+        <item name="colorSecondaryContainer">@color/shop_item_color</item>
+        <item name="colorOnSecondaryContainer">@color/secondary_text</item>
+        <item name="colorSurfaceVariant">@color/surface_color</item>
+        <item name="colorOnSurface">@color/primary_text</item>
+        <item name="colorOnSurfaceVariant">@color/secondary_text</item>
     </style>
 </resources>

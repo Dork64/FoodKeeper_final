@@ -26,11 +26,6 @@
         </activity>
 
         <activity
-            android:name=".SplashActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name=".AuthActivity"
             android:exported="false" />
 

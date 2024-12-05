@@ -4,7 +4,7 @@
     <color name="surface_color">#1E1E1E</color>
     <color name="primary_text">#FFFFFF</color>
     <color name="secondary_text">#B3FFFFFF</color>
-    <color name="accent_color">#BB86FC</color>
+
     
     <!-- Базовые цвета -->
     <color name="black">#FF000000</color>
