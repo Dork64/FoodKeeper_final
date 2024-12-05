@@ -3,13 +3,13 @@
     <item
         android:id="@+id/shoppingList"
         android:icon="@drawable/ic_shopping_list"
-        android:title="Shopping List" />
+        android:title="Список покупок" />
     <item
         android:id="@+id/fridge"
         android:icon="@drawable/ic_fridge"
-        android:title="Fridge" />
+        android:title="Холодильник" />
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_profile"
-        android:title="Profile" />
+        android:title="Профиль" />
 </menu>

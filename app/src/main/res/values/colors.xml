@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background_color">#FFFFFF</color>
-    <color name="surface_color">#FFFFFF</color>
-    <color name="primary_text">#000000</color>
-    <color name="secondary_text">#757575</color>
-    <color name="accent_color">#6200EE</color>
+    <!-- Основные цвета -->
+    <color name="background_color">#F6FFF4</color> <!-- Светло-зеленый фон -->
+    <color name="surface_color">#E8F5E9</color> <!-- Фон для карточек -->
+    <color name="headline_text">#025429</color> <!-- Темно-зеленый для заголовков -->
+    <color name="primary_text">#1B5E20</color> <!-- Основной текст -->
+    <color name="secondary_text">#2E7D32</color> <!-- Вторичный текст -->
+    <color name="button_text">#FFFFFF</color> <!-- Текст на кнопках -->
+    <color name="button_background">#4CAF50</color> <!-- Фон кнопок -->
+    <color name="button_background_secondary">#81C784</color> <!-- Фон вторичных кнопок -->
+    
+    <!-- Цвета для элементов списка -->
+    <color name="list_item_background">#B9F6CA</color> <!-- Фон элементов списка -->
+    <color name="list_item_text">#1B5E20</color> <!-- Текст элементов списка -->
+    
+    <!-- Цвета для нижней навигации -->
+    <color name="nav_icon_inactive">#78909C</color> <!-- Неактивные иконки -->
+    <color name="shop_item_color">#2E7D32</color> <!-- Активные иконки -->
+    <color name="accent_color">#2E7D32</color> <!-- Активные иконки -->
 
+
+    <color name="nav_icon_active">#2E7D32</color> <!-- Активные иконки -->
+
+    <!-- Цвета для переключателей -->
+    <color name="switch_track_on">#81C784</color> <!-- Трек включенного переключателя -->
+    <color name="switch_thumb_on">#4CAF50</color> <!-- Ползунок включенного переключателя -->
+    
+    <!-- Цвета для уведомлений -->
+    <color name="notification_background">#E8F5E9</color> <!-- Фон уведомлений -->
+    <color name="notification_text">#1B5E20</color> <!-- Текст уведомлений -->
+    
     <!-- Базовые цвета -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray">#808080</color>
-    <color name="red">#FF0000</color>
-    <color name="light_gray">#D3D3D3</color>
+    <color name="gray">#78909C</color>
+    <color name="light_gray">#ECEFF1</color>
+    <color name="red">#F44336</color>
 </resources>
