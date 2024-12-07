@@ -606,7 +606,7 @@ class ShoppingListFragment<T> : Fragment() {
                             val expiryDate = dateFormat.parse(dateStr)
                             val today = Calendar.getInstance().time
                             val diffInDays = ChronoUnit.DAYS.between(today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()) + 1
+                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate())
                             addToFridge(item, position, diffInDays.toInt())
                         } catch (e: Exception) {
                             Toast.makeText(requireContext(), "Неверный формат даты", Toast.LENGTH_SHORT).show()

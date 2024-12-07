@@ -431,7 +431,7 @@ class FridgeFragment<T> : Fragment() {
 
     private fun showEditItemDialog(item: FridgeItem) {
         val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_edit_item, null) // Используем новый макет
+            .inflate(R.layout.dialog_edit_item, null)
 
         val editTextName = dialogView.findViewById<EditText>(R.id.etEditName)
         val datePickerButton = dialogView.findViewById<Button>(R.id.btnEditSelectDate)
@@ -440,27 +440,34 @@ class FridgeFragment<T> : Fragment() {
         editTextName.setText(item.name)
         editTextName.setSelection(item.name.length)
 
-        // Отображаем текущую дату срока годности, если она уже установлена
-        if (item.expiryDays > 0) {
-            val expiryDate = LocalDate.now().plusDays(item.expiryDays.toLong() - 1)
-            datePickerButton.text = expiryDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-        } else {
-            datePickerButton.text = "Выберите дату"
-        }
+        // Отображаем текущую дату срока годности
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = item.addedDate
+        calendar.add(Calendar.DAY_OF_YEAR, item.expiryDays)
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        datePickerButton.text = dateFormat.format(calendar.time)
 
         // Настраиваем выбор даты
         datePickerButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
+            val currentCalendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    val today = LocalDate.now()
-
-                    // Рассчитываем количество дней от сегодняшнего дня до выбранной даты
-                    val daysBetween = ChronoUnit.DAYS.between(today, selectedDate)
-                        item.expiryDays = daysBetween.toInt()  + 1 // Сохраняем количество дней
-                        datePickerButton.text = selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                    val selectedCalendar = Calendar.getInstance()
+                    selectedCalendar.set(year, month, dayOfMonth, 0, 0, 0)
+                    selectedCalendar.set(Calendar.MILLISECOND, 0)
+                    
+                    val currentCalendar = Calendar.getInstance()
+                    currentCalendar.set(Calendar.HOUR_OF_DAY, 0)
+                    currentCalendar.set(Calendar.MINUTE, 0)
+                    currentCalendar.set(Calendar.SECOND, 0)
+                    currentCalendar.set(Calendar.MILLISECOND, 0)
+                    
+                    val diffInMillis = selectedCalendar.timeInMillis - currentCalendar.timeInMillis
+                    val diffInDays = (diffInMillis / (24 * 60 * 60 * 1000)).toInt()
+                    
+                    item.expiryDays = diffInDays
+                    datePickerButton.text = dateFormat.format(selectedCalendar.time)
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -475,10 +482,9 @@ class FridgeFragment<T> : Fragment() {
             .setView(dialogView)
             .setPositiveButton("Сохранить") { _, _ ->
                 val updatedName = editTextName.text.toString()
-
                 if (updatedName.isNotEmpty()) {
                     item.name = updatedName
-                    updateFridgeItem(item) // Обновляем данные в хранилище
+                    updateFridgeItem(item)
                 } else {
                     Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
                 }
@@ -517,10 +523,14 @@ class FridgeFragment<T> : Fragment() {
 
         textViewProductName.text = item.name
         textViewProductCategory.text = "Категория: ${item.category}"
-        val today = LocalDate.now()
-        val expiryDate = today.plusDays(item.expiryDays.toLong() - 1)
-        textViewProductExpiry.text = "Срок годности до: ${expiryDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}"
-
+        
+        // Используем Calendar для правильного расчета даты
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = item.addedDate
+        calendar.add(Calendar.DAY_OF_YEAR, item.expiryDays)
+        val expiryDate = calendar.time
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        textViewProductExpiry.text = "Срок годности до: ${dateFormat.format(expiryDate)}"
 
         val dialog = AlertDialog.Builder(context)
             .setTitle("Информация о продукте")
@@ -678,7 +688,7 @@ class FridgeFragment<T> : Fragment() {
                             val expiryDate = dateFormat.parse(dateStr)
                             val today = Calendar.getInstance().time
                             val diffInDays = ChronoUnit.DAYS.between(today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()) + 1
+                                expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate())
                             item.expiryDays = diffInDays.toInt()
                             addFridgeItem(item)
 
