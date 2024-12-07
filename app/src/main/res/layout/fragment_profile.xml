@@ -5,98 +5,88 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B7D1DD"
-    android:padding="16dp"
+    android:background="@color/background_color"
     tools:context="com.example.foodkeeper_final.fragments.ProfileFragment">
 
     <!-- Верхняя панель -->
     <TextView
+        style="@style/AppHead"
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:gravity="center_vertical"
-        android:padding="16dp"
         android:text="Профиль"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/btnProfileIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Кнопки профиля -->
+
     <ImageButton
         android:id="@+id/btnProfileIcon"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_marginEnd="-1dp"
         android:layout_marginBottom="25dp"
+        android:background="@color/background_color"
         android:contentDescription="Профиль иконка"
         android:src="@drawable/ic_profile"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/viewDividerHead"
+        style="@style/viewDivider"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/btnAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnAccount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        style="@style/AppButton"
         android:layout_marginTop="16dp"
         android:text="Аккаунт"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <Button
         android:id="@+id/btnSettings"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        style="@style/AppButton"
         android:text="Настройки"
-        android:textColor="#000000"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAccount" />
 
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnAppearance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:text="Внешний вид"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
 
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnSharedAccess"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:text="Совместный доступ"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAppearance" />
 
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnHelp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Помощь"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSharedAccess" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
