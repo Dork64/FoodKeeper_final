@@ -76,7 +76,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
 
     <Button
-        android:id="@+id/btnSharing"
+        android:id="@+id/btnSharedAccess"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -92,11 +92,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Помощь"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSharing" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSharedAccess" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

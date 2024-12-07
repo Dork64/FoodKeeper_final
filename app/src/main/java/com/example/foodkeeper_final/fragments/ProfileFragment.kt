@@ -35,12 +35,13 @@ class ProfileFragment : Fragment() {
             showThemeDialog()
         }
 
-        view.findViewById<Button>(R.id.btnSharing).setOnClickListener {
+        view.findViewById<Button>(R.id.btnSharedAccess).setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_sharedAccess)
         }
 
+        // Обработка нажатия на кнопку помощи
         view.findViewById<Button>(R.id.btnHelp).setOnClickListener {
-            // TODO: Implement help section
+            findNavController().navigate(R.id.action_profile_to_help)
         }
 
         return view

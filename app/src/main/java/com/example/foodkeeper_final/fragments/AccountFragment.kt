@@ -23,6 +23,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 
 class AccountFragment : Fragment() {
     private lateinit var ivProfileImage: ImageView
@@ -52,6 +53,10 @@ class AccountFragment : Fragment() {
         btnLogout = view.findViewById(R.id.btnLogout)
         btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount)
 
+        view.findViewById<ImageView>(R.id.btnBack).setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         // Загрузка данных пользователя
         loadUserData()
 
@@ -61,6 +66,7 @@ class AccountFragment : Fragment() {
 
         return view
     }
+
 
     private fun setupNameEditing() {
         // Показываем кнопку сохранения только при изменении текста

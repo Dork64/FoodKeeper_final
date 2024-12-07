@@ -10,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.foodkeeper_final.MainActivity
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.databinding.FragmentSharedAccessBinding
@@ -43,6 +45,12 @@ class SharedAccessFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Настраиваем кнопку "Назад"
+        view.findViewById<ImageView>(R.id.btnBack).setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         checkAccessMode()
     }
 
