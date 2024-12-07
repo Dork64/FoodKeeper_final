@@ -45,6 +45,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -52,7 +53,9 @@ dependencies {
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
-    
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.play.services.base)
+
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))

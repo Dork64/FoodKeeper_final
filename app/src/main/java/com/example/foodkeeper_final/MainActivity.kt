@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         instance = this
+        
         FirebaseApp.initializeApp(this)
 
         // Загружаем и применяем сохранённую тему

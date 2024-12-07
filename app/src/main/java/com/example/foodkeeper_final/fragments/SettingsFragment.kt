@@ -38,6 +38,11 @@ class SettingsFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        // Переход к экрану уведомлений
+        view.findViewById<View>(R.id.notificationsCard).setOnClickListener {
+            findNavController().navigate(R.id.action_settings_to_notifications)
+        }
+
         return view
     }
 
