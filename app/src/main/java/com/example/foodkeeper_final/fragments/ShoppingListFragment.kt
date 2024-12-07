@@ -35,6 +35,7 @@ import com.example.foodkeeper_final.adapters.ShoppingListAdapter
 import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 import com.example.foodkeeper_final.utils.Constants
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -52,7 +53,7 @@ import java.util.Locale
 class ShoppingListFragment<T> : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var fabAddItem: FloatingActionButton
+    private lateinit var fabAddItem: MaterialCardView
     private lateinit var adapter: ShoppingListAdapter
     private val shoppingList = mutableListOf<ShoppingItem>()
     private val recentProductsList = mutableListOf<String>()

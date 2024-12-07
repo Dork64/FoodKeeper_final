@@ -7,26 +7,28 @@
 
     <!-- Заголовок -->
     <TextView
+        style="@style/AppHead"
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Список покупок"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="16dp"
-        android:fontFamily="@font/poppins_regular"
-        android:textColor="@color/headline_text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <View
+        style="@style/viewDivider"
+        android:id="@+id/viewDividerHead"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewShoppingList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Spinner
         android:id="@+id/spinnerCategory"
-        android:layout_width="154dp"
+        android:layout_width="150dp"
         android:layout_height="39dp"
         android:layout_gravity="end"
         android:layout_margin="8dp"
         android:entries="@array/category_list"
+        android:popupBackground="@drawable/ic_profile"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="@+id/tvTitle"
@@ -45,22 +47,31 @@
         tools:listitem="@layout/item_shopping_list" />
 
     <View
+        style="@style/viewDivider"
         android:id="@+id/viewDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#000000"
         app:layout_constraintBottom_toTopOf="@id/fabAddItem"
+        android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabAddItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_margin="24dp"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="@color/button_text"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@color/button_background_secondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/ivAddIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="#9CD6C5"
+            android:src="@drawable/ic_add" />
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

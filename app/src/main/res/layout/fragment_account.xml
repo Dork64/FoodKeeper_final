@@ -4,30 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
-    android:padding="16dp">
+    android:background="@color/background_color">
+
+    <!-- Фото профиля -->
 
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginTop="18dp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Профиль"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@id/btnBack"
+        style="@style/AppHead"
+        android:layout_width="0dp"
+        android:text="Аккаунт"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Фото профиля -->
+    <View
+        android:id="@+id/viewDividerHead"
+        style="@style/viewDivider"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/ivProfileImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivProfileImage"
         android:layout_width="120dp"
@@ -43,15 +51,16 @@
         android:id="@+id/etName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@color/white"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="36dp"
+        android:background="#FFFFFF"
         android:hint="Введите имя"
-        android:padding="16dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textColorHint="@color/gray"
         android:imeOptions="actionDone"
+        android:padding="16dp"
         android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/btnSaveName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivProfileImage" />
@@ -59,6 +68,7 @@
     <Button
         android:id="@+id/btnSaveName"
         android:layout_width="wrap_content"
+        android:background="@color/background_color"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:text="Сохранить"
@@ -74,8 +84,10 @@
         android:id="@+id/layoutEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/white"
+        android:background="@color/background_color"
+        android:backgroundTint="#FFFFFF"
         android:orientation="vertical"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,16 +97,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:background="#FFFFFF"
             android:text="Email"
             android:textColor="@color/gray"
-            android:textSize="14sp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:padding="16dp"
             android:paddingTop="8dp"
             android:textColor="@color/black"
@@ -104,41 +118,42 @@
 
     <!-- Кнопка изменения пароля -->
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnChangePassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/light_gray"
         android:text="Изменить пароль"
-        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutEmail" />
 
     <!-- Кнопка выхода -->
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/light_gray"
         android:text="Выйти"
-        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnChangePassword" />
 
     <!-- Кнопка удаления аккаунта -->
     <Button
+        style="@style/AppButton"
         android:id="@+id/btnDeleteAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/red"
         android:text="Удалить аккаунт"
-        android:textColor="@color/white"
+        android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnLogout" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

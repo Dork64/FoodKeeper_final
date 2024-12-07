@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/light_gray">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,10 +23,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Настройки"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/headline_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <View
+        style="@style/viewDivider"
+        android:id="@+id/viewDividerHead"
+        app:layout_constraintBottom_toTopOf="@id/notificationsCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,6 +50,9 @@
                 android:id="@+id/notificationsCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp"
                 android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:focusable="true">
@@ -51,8 +60,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/button_background"
                     android:padding="16dp"
                     android:text="Уведомления"
+                    android:textColor="@color/default_text"
                     android:textSize="16sp" />
             </com.google.android.material.card.MaterialCardView>
 
@@ -60,13 +71,19 @@
                 android:id="@+id/languageCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/button_background"
                 android:layout_marginBottom="8dp"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp"
                 android:clickable="true"
                 android:focusable="true">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/button_background"
+                    android:textColor="@color/default_text"
                     android:padding="16dp"
                     android:text="Язык"
                     android:textSize="16sp" />
@@ -75,11 +92,15 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp"
                 android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/button_background"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -87,11 +108,13 @@
                         android:id="@+id/autoSortSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/default_text"
                         android:text="Авто сортировка по срокам годности" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/button_background"
                         android:layout_marginTop="4dp"
                         android:text="Элементы холодильника будут отсортированы по возрастанию сроков годности"
                         android:textSize="12sp"
@@ -101,10 +124,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp">
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:background="@color/button_background"
+                    app:cardCornerRadius="12dp"
+                    app:strokeColor="@color/button_stroke"
+                    app:strokeWidth="1dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
@@ -113,11 +144,13 @@
                         android:id="@+id/autoTransferSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/default_text"
                         android:text="Авто перенос товаров" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/button_background"
                         android:layout_marginTop="4dp"
                         android:text="Перенести товар в список покупок по истечении срока годности"
                         android:textSize="12sp"

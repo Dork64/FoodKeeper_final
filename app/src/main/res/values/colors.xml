@@ -6,12 +6,16 @@
     <color name="headline_text">#025429</color> <!-- Темно-зеленый для заголовков -->
     <color name="primary_text">#1B5E20</color> <!-- Основной текст -->
     <color name="secondary_text">#2E7D32</color> <!-- Вторичный текст -->
+    <color name="default_text">#000000</color> <!-- Вторичный текст -->
     <color name="button_text">#FFFFFF</color> <!-- Текст на кнопках -->
-    <color name="button_background">#4CAF50</color> <!-- Фон кнопок -->
-    <color name="button_background_secondary">#81C784</color> <!-- Фон вторичных кнопок -->
+    <color name="button_background">#A9E1D1</color> <!-- Фон кнопок -->
+    <color name="button_stroke">#4C8860</color> <!-- Фон кнопок -->
+    <color name="button_background_secondary">#9DD8C7</color> <!-- Фон вторичных кнопок -->
+
+    <color name="divider_color">#02542D</color> <!-- Фон разделительных линий -->
     
     <!-- Цвета для элементов списка -->
-    <color name="list_item_background">#B9F6CA</color> <!-- Фон элементов списка -->
+    <color name="list_item_background">#A7EBC9</color> <!-- Фон элементов списка -->
     <color name="list_item_text">#1B5E20</color> <!-- Текст элементов списка -->
     
     <!-- Цвета для нижней навигации -->
