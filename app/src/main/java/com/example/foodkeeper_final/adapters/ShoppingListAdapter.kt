@@ -8,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodkeeper_final.R
+import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 
 class ShoppingListAdapter(
     private val items: List<ShoppingItem>,
     private val onEdit: (ShoppingItem) -> Unit, // Callback для редактирования
     private val onDelete: (ShoppingItem, Int) -> Unit, // Callback для удаления
-    private val onMove: (ShoppingItem, Int) -> Unit // Callback для перемещения с позицией
+    private val onMove: (ShoppingItem, Int) -> Unit, // Callback для перемещения с позицией
 ) : RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,27 +39,39 @@ class ShoppingListAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         private val ivIcon: ImageView = itemView.findViewById(R.id.ivItemIcon)
         private val tvName: TextView = itemView.findViewById(R.id.tvItemName)
-        private val ivEdit: ImageView = itemView.findViewById(R.id.ivEditItem) // Кнопка "Редактировать"
-        private val ivDelete: ImageView = itemView.findViewById(R.id.ivDeleteItem) // Кнопка "Удалить"
-        private val ivMove: ImageView = itemView.findViewById(R.id.ivMoveToFridge) // Кнопка "Переместить"
+        private val tvQuantity: TextView = itemView.findViewById(R.id.tvQuantity)
+        private val ivEdit: ImageView = itemView.findViewById(R.id.ivEditItem)
+        private val ivDelete: ImageView = itemView.findViewById(R.id.ivDeleteItem)
+        private val ivMove: ImageView = itemView.findViewById(R.id.ivMoveToFridge)
 
         fun bind(item: ShoppingItem) {
             tvName.text = item.name
+
+            // Отображаем количество и единицу измерения
+            val quantityText = if (item.quantity.isNotEmpty() && item.unit.isNotEmpty()) {
+                "${item.quantity} ${item.unit}"
+            } else {
+                "Количество не указано"
+            }
+            tvQuantity.text = quantityText
 
             if (item.imageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
                     .load(item.imageUrl)
                     .placeholder(R.drawable.ic_placeholder)
-                    .error(R.drawable.ic_error)
                     .into(ivIcon)
             } else {
                 ivIcon.setImageResource(R.drawable.ic_placeholder)
             }
 
-            // Обработчики кнопок
+            // Настраиваем обработчики кликов
             ivEdit.setOnClickListener { onEdit(item) }
-            ivDelete.setOnClickListener { onDelete(item, position) }
-            ivMove.setOnClickListener { onMove(item, position) }
+            ivDelete.setOnClickListener { onDelete(item, adapterPosition) }
+            ivMove.setOnClickListener { onMove(item, adapterPosition) }
+
+            itemView.setOnClickListener {
+                onEdit(item) // Сработает при клике на элемент
+            }
         }
     }
 }

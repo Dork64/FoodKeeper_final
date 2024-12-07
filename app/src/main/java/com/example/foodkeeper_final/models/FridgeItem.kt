@@ -10,6 +10,8 @@ data class FridgeItem(
     val addedDate: Long = 0, // Timestamp когда продукт был добавлен в холодильник
     var expiryDays: Int = 0,
     val defaultStorageDays: Int = 0,
+    var quantity: String = "1",
+    var unit: String = "шт"
 ){
 
     fun getExpiryDate(): Long {

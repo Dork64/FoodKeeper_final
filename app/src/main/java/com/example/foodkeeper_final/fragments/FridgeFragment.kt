@@ -30,6 +30,7 @@ import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.FridgeAdapter
 import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
+import com.example.foodkeeper_final.utils.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -382,7 +383,9 @@ class FridgeFragment<T> : Fragment() {
             imageUrl = item.imageUrl,
             defaultStorageDays = item.defaultStorageDays,
             addedDate = System.currentTimeMillis(),
-            expiryDays = item.expiryDays
+            expiryDays = item.expiryDays,
+            quantity = item.quantity,
+            unit = item.unit
         )
 
         val itemRef = databaseReference.push() // Генерация уникального ключа
@@ -431,14 +434,34 @@ class FridgeFragment<T> : Fragment() {
 
     private fun showEditItemDialog(item: FridgeItem) {
         val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_edit_item, null)
+            .inflate(R.layout.dialog_edit_fridge_item, null)
 
         val editTextName = dialogView.findViewById<EditText>(R.id.etEditName)
+        val editTextQuantity = dialogView.findViewById<EditText>(R.id.etEditQuantity)
+        val spinnerUnit = dialogView.findViewById<Spinner>(R.id.spinnerUnit)
         val datePickerButton = dialogView.findViewById<Button>(R.id.btnEditSelectDate)
 
         // Заполняем текущее название
         editTextName.setText(item.name)
         editTextName.setSelection(item.name.length)
+
+        // Заполняем текущее количество
+        editTextQuantity.setText(item.quantity)
+
+        // Настраиваем спиннер с единицами измерения
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            Constants.UNITS_OF_MEASUREMENT
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerUnit.adapter = adapter
+
+        // Устанавливаем текущую единицу измерения
+        val unitPosition = Constants.UNITS_OF_MEASUREMENT.indexOf(item.unit)
+        if (unitPosition != -1) {
+            spinnerUnit.setSelection(unitPosition)
+        }
 
         // Отображаем текущую дату срока годности
         val calendar = Calendar.getInstance()
@@ -482,8 +505,13 @@ class FridgeFragment<T> : Fragment() {
             .setView(dialogView)
             .setPositiveButton("Сохранить") { _, _ ->
                 val updatedName = editTextName.text.toString()
+                val updatedQuantity = editTextQuantity.text.toString()
+                val updatedUnit = spinnerUnit.selectedItem.toString()
+
                 if (updatedName.isNotEmpty()) {
                     item.name = updatedName
+                    item.quantity = updatedQuantity
+                    item.unit = updatedUnit
                     updateFridgeItem(item)
                 } else {
                     Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
@@ -573,7 +601,9 @@ class FridgeFragment<T> : Fragment() {
             name = item.name,
             category = item.category,
             imageUrl = item.imageUrl,
-            defaultStorageDays = item.defaultStorageDays
+            defaultStorageDays = item.defaultStorageDays,
+            quantity = item.quantity,
+            unit = item.unit
         )
 
         // Создаем элемент в списке покупок с тем же ключом

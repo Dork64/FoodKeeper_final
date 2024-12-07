@@ -34,6 +34,7 @@ import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.adapters.ShoppingListAdapter
 import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
+import com.example.foodkeeper_final.utils.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -75,7 +76,7 @@ class ShoppingListFragment<T> : Fragment() {
             shoppingList,
             onEdit = { item -> showEditItemDialog(item) }, // Редактирование
             onDelete = { item, position -> deleteShoppingItem(item, position) }, // Удаление
-            onMove = { item, position -> moveToFridge(item, position) } // Перемещение в холодильник
+            onMove = { item, position -> moveToFridge(item, position) }
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -479,18 +480,44 @@ class ShoppingListFragment<T> : Fragment() {
 
     private fun showEditItemDialog(item: ShoppingItem) {
         val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_add_item, null)
+            .inflate(R.layout.dialog_edit_item, null)
 
-        val editTextName = dialogView.findViewById<EditText>(R.id.etSearchProduct)
-        editTextName.setText(item.name) // Заполняем текущие данные
+        val editTextName = dialogView.findViewById<EditText>(R.id.etEditName)
+        val editTextQuantity = dialogView.findViewById<EditText>(R.id.etEditQuantity)
+        val spinnerUnit = dialogView.findViewById<Spinner>(R.id.spinnerUnit)
+
+        // Заполняем текущие данные
+        editTextName.setText(item.name)
         editTextName.setSelection(item.name.length)
+        editTextQuantity.setText(item.quantity)
+
+        // Настраиваем спиннер с единицами измерения
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            Constants.UNITS_OF_MEASUREMENT
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerUnit.adapter = adapter
+
+        // Устанавливаем текущую единицу измерения
+        val unitPosition = Constants.UNITS_OF_MEASUREMENT.indexOf(item.unit)
+        if (unitPosition != -1) {
+            spinnerUnit.setSelection(unitPosition)
+        }
+
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Редактировать продукт")
             .setView(dialogView)
             .setPositiveButton("Сохранить") { _, _ ->
                 val updatedName = editTextName.text.toString()
+                val updatedQuantity = editTextQuantity.text.toString()
+                val updatedUnit = spinnerUnit.selectedItem.toString()
+
                 if (updatedName.isNotEmpty()) {
                     item.name = updatedName
+                    item.quantity = updatedQuantity
+                    item.unit = updatedUnit
                     updateShoppingItem(item)
                 } else {
                     Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
@@ -651,7 +678,9 @@ class ShoppingListFragment<T> : Fragment() {
             imageUrl = item.imageUrl,
             defaultStorageDays = item.defaultStorageDays,
             addedDate = System.currentTimeMillis(),
-            expiryDays = storageDays
+            expiryDays = storageDays,
+            quantity = item.quantity,
+            unit = item.unit
         )
         // Копируем элемент в холодильник
         fridgeRef.child(item.id).setValue(fridgeItem).addOnSuccessListener {

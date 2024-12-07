@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.example.foodkeeper_final.R
@@ -41,6 +42,10 @@ class SettingsFragment : Fragment() {
         // Переход к экрану уведомлений
         view.findViewById<View>(R.id.notificationsCard).setOnClickListener {
             findNavController().navigate(R.id.action_settings_to_notifications)
+        }
+
+        view.findViewById<View>(R.id.languageCard).setOnClickListener {
+            Toast.makeText(context, "В данной версии смена языка не предусмотрена", Toast.LENGTH_SHORT).show()
         }
 
         return view

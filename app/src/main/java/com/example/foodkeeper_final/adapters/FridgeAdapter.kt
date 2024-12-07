@@ -35,11 +35,19 @@ class FridgeAdapter(
         private val productImage: ImageView = itemView.findViewById(R.id.productImage)
         private val productName: TextView = itemView.findViewById(R.id.productName)
         private val expiryInfo: TextView = itemView.findViewById(R.id.expiryInfo)
-
+        private val quantityInfo: TextView = itemView.findViewById(R.id.quantityInfo)
 
         fun bind(product: FridgeItem) {
             // Отображаем название продукта
             productName.text = product.name
+
+            // Отображаем количество и единицу измерения
+            val quantityText = if (product.quantity.isNotEmpty() && product.unit.isNotEmpty()) {
+                "${product.quantity} ${product.unit}"
+            } else {
+                "Количество не указано"
+            }
+            quantityInfo.text = quantityText
 
             // Отображаем информацию о сроке годности
             val remainingDays = product.getRemainingDays()
@@ -81,8 +89,6 @@ class FridgeAdapter(
             productImage.setOnClickListener {
                 onItemClick(product) // Сработает при клике на изображение
             }
-
-
         }
     }
 }

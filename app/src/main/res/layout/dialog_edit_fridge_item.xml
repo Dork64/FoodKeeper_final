@@ -38,4 +38,20 @@
             android:minWidth="100dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Укажите дату истечения срока годности при необходимости"
+        android:layout_marginTop="32dp" />
+
+    <Button
+        android:id="@+id/btnEditSelectDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:text="Выберите дату"
+        android:textSize="16sp" />
+
 </LinearLayout>
