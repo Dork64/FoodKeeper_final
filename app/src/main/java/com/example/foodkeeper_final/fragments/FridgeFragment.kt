@@ -31,6 +31,7 @@ import com.example.foodkeeper_final.adapters.FridgeAdapter
 import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 import com.example.foodkeeper_final.utils.Constants
+import com.example.foodkeeper_final.utils.ToastUtils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -212,7 +213,7 @@ class FridgeFragment<T> : Fragment() {
     // Метод для отображения сообщения, что холодильник пуст
     private fun showEmptyListMessage() {
         if (isAdded) {  // Проверка, прикреплен ли фрагмент к активности
-            Toast.makeText(requireContext(), "Ваш холодильник пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("Ваш холодильник пуст. Добавьте товары!", it) }
         }
     }
 
@@ -287,14 +288,10 @@ class FridgeFragment<T> : Fragment() {
                     suggestionsAdapter.notifyDataSetChanged()
                     saveRecentProducts()
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Продукт добавлен: $selectedProductName",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    context?.let { ToastUtils.showCustomToast("Продукт добавлен: $selectedProductName", it) }
                 } else {
                     // Продукт не найден
-                    Toast.makeText(requireContext(), "Продукт не найден", Toast.LENGTH_SHORT).show()
+                    context?.let { ToastUtils.showCustomToast("Продукт не найден", it) }
                 }
                 dialog.dismiss()
             }
@@ -398,7 +395,7 @@ class FridgeFragment<T> : Fragment() {
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка добавления: ${exception.message}")
-                Toast.makeText(requireContext(), "Не удалось добавить продукт", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Не удалось добавить продукт", it) }
             }
     }
 
@@ -421,11 +418,11 @@ class FridgeFragment<T> : Fragment() {
                     .addOnSuccessListener {
 
                         filterFridgeList(currentCategory)
-                        Toast.makeText(requireContext(), "Элемент удалён", Toast.LENGTH_SHORT).show()
+                        context?.let { ToastUtils.showCustomToast("Продукт удален", it) }
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseError", "Ошибка удаления: ${exception.message}")
-                        Toast.makeText(requireContext(), "Не удалось удалить элемент", Toast.LENGTH_SHORT).show()
+                        context?.let { ToastUtils.showCustomToast("Не удалось удалить продукт", it) }
                     }
             }
             .setNegativeButton("Нет") {_, _ -> updateFridgeList()}
@@ -514,7 +511,7 @@ class FridgeFragment<T> : Fragment() {
                     item.unit = updatedUnit
                     updateFridgeItem(item)
                 } else {
-                    Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
+                    context?.let { ToastUtils.showCustomToast("Название не может быть пустым", it) }
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -531,11 +528,11 @@ class FridgeFragment<T> : Fragment() {
             .addOnSuccessListener {
                 adapter.notifyDataSetChanged()
                 filterFridgeList(currentCategory)
-                Toast.makeText(requireContext(), "Элемент обновлён", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Продукт обновлен", it) }
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка обновления: ${exception.message}")
-                Toast.makeText(requireContext(), "Не удалось обновить элемент", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Не удалось обновить продукт", it) }
             }
     }
     @RequiresApi(Build.VERSION_CODES.O)
@@ -618,16 +615,16 @@ class FridgeFragment<T> : Fragment() {
                 databaseReference.child(item.id).removeValue()
                     .addOnSuccessListener {
                         filterFridgeList(currentCategory)
-                        Toast.makeText(requireContext(), "Элемент перемещён в список покупок", Toast.LENGTH_SHORT).show()
+                        context?.let { ToastUtils.showCustomToast("Элемент перемещён в список покупок", it) }
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseError", "Ошибка удаления из холодильника: ${exception.message}")
-                        Toast.makeText(requireContext(), "Ошибка при удалении из холодильника", Toast.LENGTH_SHORT).show()
+                        context?.let { ToastUtils.showCustomToast("Ошибка при удалении из холодильника", it) }
                     }
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка перемещения в список покупок: ${exception.message}")
-                Toast.makeText(requireContext(), "Ошибка при добавлении в список покупок", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Ошибка при добавлении в список покупок", it) }
             }
     }
 
@@ -723,11 +720,11 @@ class FridgeFragment<T> : Fragment() {
                             addFridgeItem(item)
 
                         } catch (e: Exception) {
-                            Toast.makeText(requireContext(), "Неверный формат даты", Toast.LENGTH_SHORT).show()
+                            context?.let { ToastUtils.showCustomToast("Неверный формат даты", it) }
                             return@setOnClickListener
                         }
                     } else {
-                        Toast.makeText(requireContext(), "Пожалуйста, выберите дату", Toast.LENGTH_SHORT).show()
+                        context?.let { ToastUtils.showCustomToast("Пожалуйста выберите дату", it) }
                         return@setOnClickListener
                     }
                 }
@@ -758,7 +755,7 @@ class FridgeFragment<T> : Fragment() {
             }
             if (expiredItems.isNotEmpty()) {
                 adapter.notifyDataSetChanged()
-                Toast.makeText(requireContext(), "Истекшие продукты перемещены в список покупок.", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Продукты с истекшим сроком годности перемещы в список покупок", it) }
             }
         }
     }

@@ -2,10 +2,12 @@ package com.example.foodkeeper_final.fragments
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -22,6 +24,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -270,7 +273,7 @@ class ShoppingListFragment<T> : Fragment() {
     // Метод для отображения сообщения, что список пуст
     private fun showEmptyListMessage() {
         if (isAdded) {  // Проверка, прикреплен ли фрагмент к активности
-            Toast.makeText(requireContext(), "Ваш список пуст. Добавьте товары!", Toast.LENGTH_SHORT).show()
+            showCustomToast("Ваш список пуст. Добавьте товары!", requireContext())
         }
     }
 
@@ -344,14 +347,10 @@ class ShoppingListFragment<T> : Fragment() {
                     suggestionsAdapter.notifyDataSetChanged()
                     saveRecentProducts()
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Продукт добавлен: $selectedProductName",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showCustomToast("Продукт добавлен: $selectedProductName", requireContext())
                 } else {
                     // Продукт не найден
-                    Toast.makeText(requireContext(), "Продукт не найден", Toast.LENGTH_SHORT).show()
+                    showCustomToast("Продукт не найден", requireContext())
                 }
                 dialog.dismiss()
             }
@@ -447,7 +446,7 @@ class ShoppingListFragment<T> : Fragment() {
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка добавления: ${exception.message}")
-                Toast.makeText(requireContext(), "Не удалось добавить продукт", Toast.LENGTH_SHORT).show()
+                showCustomToast("Не удалось добавить продукт", requireContext())
             }
     }
 
@@ -474,11 +473,11 @@ class ShoppingListFragment<T> : Fragment() {
                     .addOnSuccessListener {
 
                         filterShoppingList(currentCategory)
-                        Toast.makeText(requireContext(), "Элемент удалён", Toast.LENGTH_SHORT).show()
+                        showCustomToast("Продукт удален", requireContext())
                     }
                     .addOnFailureListener { exception ->
                         Log.e("FirebaseError", "Ошибка удаления: ${exception.message}")
-                        Toast.makeText(requireContext(), "Не удалось удалить элемент", Toast.LENGTH_SHORT).show()
+                        showCustomToast("Не удалось удалить продукт", requireContext())
                     }
             }
             .setNegativeButton("Нет") {_, _ -> updateShoppingList()}
@@ -527,7 +526,7 @@ class ShoppingListFragment<T> : Fragment() {
                     item.unit = updatedUnit
                     updateShoppingItem(item)
                 } else {
-                    Toast.makeText(requireContext(), "Название не может быть пустым", Toast.LENGTH_SHORT).show()
+                    showCustomToast("Название не может быть пустым", requireContext())
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -543,11 +542,11 @@ class ShoppingListFragment<T> : Fragment() {
             .addOnSuccessListener {
                 adapter.notifyDataSetChanged()
                 filterShoppingList(currentCategory)
-                Toast.makeText(requireContext(), "Элемент обновлён", Toast.LENGTH_SHORT).show()
+                showCustomToast("Продукт обновлен", requireContext())
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseError", "Ошибка обновления: ${exception.message}")
-                Toast.makeText(requireContext(), "Не удалось обновить элемент", Toast.LENGTH_SHORT).show()
+                showCustomToast("Не удалось обновить продукт", requireContext())
             }
     }
 
@@ -643,11 +642,11 @@ class ShoppingListFragment<T> : Fragment() {
                                 expiryDate?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate())
                             addToFridge(item, position, diffInDays.toInt())
                         } catch (e: Exception) {
-                            Toast.makeText(requireContext(), "Неверный формат даты", Toast.LENGTH_SHORT).show()
+                            showCustomToast("Неверный формат даты", requireContext())
                             return@setOnClickListener
                         }
                     } else {
-                        Toast.makeText(requireContext(), "Пожалуйста, выберите дату", Toast.LENGTH_SHORT).show()
+                        showCustomToast("Пожалуйста, выберите дату", requireContext())
                         return@setOnClickListener
                     }
                 }
@@ -694,13 +693,40 @@ class ShoppingListFragment<T> : Fragment() {
             // После успешного копирования удаляем из списка покупок
             shoppingList.removeAt(position)
             shoppingRef.child(item.id).removeValue().addOnSuccessListener {
-                Toast.makeText(context, "Товар перемещен в холодильник", Toast.LENGTH_SHORT).show()
+                showCustomToast("Товар перемещен в холодильник", requireContext())
                 updateShoppingList()
             }.addOnFailureListener { e ->
-                Toast.makeText(context, "Ошибка при удалении из списка: ${e.message}", Toast.LENGTH_SHORT).show()
+                showCustomToast("Ошибка при удалении из списка: ${e.message}", requireContext())
             }
         }.addOnFailureListener { e ->
-            Toast.makeText(context, "Ошибка при перемещении: ${e.message}", Toast.LENGTH_SHORT).show()
+            showCustomToast("Ошибка при перемещении: ${e.message}", requireContext())
         }
     }
+
+    fun showCustomToast(message: String, context: Context) {
+        // Создаём стандартный Toast
+        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+
+        // Получаем view Toast
+        val toastView = toast.view
+
+        // Устанавливаем фон Toast
+        val background = GradientDrawable()
+        background.cornerRadius = 32f
+        background.setColor(ContextCompat.getColor(context, R.color.background_color))
+        background.setStroke(2, ContextCompat.getColor(context, R.color.default_text))
+        toastView?.background = background
+
+        // Получаем TextView внутри Toast и меняем его стиль
+        val toastText = toastView?.findViewById<TextView>(android.R.id.message)
+        toastText?.setTextColor(context.getColor(R.color.list_item_text))
+        toastText?.textSize = 14f
+
+        val textBackground = GradientDrawable()
+        textBackground.setColor(ContextCompat.getColor(context, R.color.background_color))
+        toastText?.background = textBackground
+
+        toast.show()
+    }
+
 }

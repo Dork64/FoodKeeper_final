@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.example.foodkeeper_final.R
+import com.example.foodkeeper_final.utils.ToastUtils
 
 class SettingsFragment : Fragment() {
     override fun onCreateView(
@@ -45,7 +46,7 @@ class SettingsFragment : Fragment() {
         }
 
         view.findViewById<View>(R.id.languageCard).setOnClickListener {
-            Toast.makeText(context, "В данной версии смена языка не предусмотрена", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("В данной версии смена языка не предусмотрена", it) }
         }
 
         return view

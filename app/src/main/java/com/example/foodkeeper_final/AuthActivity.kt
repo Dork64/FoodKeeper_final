@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foodkeeper_final.databinding.ActivityAuthBinding
+import com.example.foodkeeper_final.fragments.ShoppingListFragment
 import com.example.foodkeeper_final.models.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -78,7 +80,7 @@ class AuthActivity : AppCompatActivity() {
                 } else {
                     when (task.exception) {
                         is FirebaseAuthInvalidUserException ->
-                            showErrorSnackbar("Пользователь с таким email не найден")
+                            showErrorSnackbar("Пользователь с таким email не найден. Зарегистируйтесь по кнопке в самом низу экрана")
                         is FirebaseAuthInvalidCredentialsException ->
                             showErrorSnackbar("Неверный email или пароль")
                         is FirebaseTooManyRequestsException ->
@@ -140,6 +142,7 @@ class AuthActivity : AppCompatActivity() {
                             addUserToDatabase()
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
+                            showErrorSnackbar("Вы успешно зарегистрировались! Войдите с введенными ранее данными")
                         } else {
                             when (task.exception) {
                                 is FirebaseAuthWeakPasswordException ->
@@ -185,11 +188,7 @@ class AuthActivity : AppCompatActivity() {
             .addOnCompleteListener { resetTask ->
                 progressDialog.dismiss()
                 if (resetTask.isSuccessful) {
-                    Snackbar.make(
-                        binding.root,
-                        "Если пользователь с таким email существует, инструкции по сбросу пароля будут отправлены",
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    showErrorSnackbar("Инструкции по сбросу пароля отправлены")
                 } else {
                     when (resetTask.exception) {
                         is FirebaseAuthInvalidUserException ->
@@ -206,13 +205,21 @@ class AuthActivity : AppCompatActivity() {
 
     // Функция для отображения ошибок с помощью Snackbar
     private fun showErrorSnackbar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
-            .setAction("OK") {}
-            .setTextColor(getResources().getColor(android.R.color.white))
-            .setBackgroundTint(getResources().getColor(android.R.color.holo_red_dark))
-            .setActionTextColor(getResources().getColor(android.R.color.white))
-            .show()
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+
+        // Настройка цветов текста и фона
+        snackbar.setAction("OK") {}
+            .setTextColor(resources.getColor(R.color.default_text))
+            .setBackgroundTint(resources.getColor(R.color.background_color))
+            .setActionTextColor(resources.getColor(R.color.default_text))
+
+        // Увеличиваем количество строк текста для длинных сообщений
+        val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.maxLines = 5
+
+        snackbar.show()
     }
+
 
     private fun addUserToDatabase() {
         val userId = auth.currentUser?.uid
@@ -229,7 +236,7 @@ class AuthActivity : AppCompatActivity() {
             userRef.setValue(user)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Snackbar.make(binding.root, "Данные пользователя добавлены в базу", Snackbar.LENGTH_SHORT).show()
+                        showErrorSnackbar("Данные пользователя добавлены в базу")
                     } else {
                         showErrorSnackbar("Ошибка при добавлении данных пользователя: ${task.exception?.message}")
                     }

@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.foodkeeper_final.MainActivity
 import com.example.foodkeeper_final.R
 import com.example.foodkeeper_final.databinding.FragmentSharedAccessBinding
+import com.example.foodkeeper_final.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -57,7 +58,7 @@ class SharedAccessFragment : Fragment() {
     private fun checkAccessMode() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
-            Toast.makeText(context, "Ошибка: пользователь не авторизован", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("Ошибка: пользователь не авторизован", it) }
             return
         }
 
@@ -108,12 +109,12 @@ class SharedAccessFragment : Fragment() {
                         }
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(context, "Ошибка при обновлении списка: ${e.message}", Toast.LENGTH_SHORT).show()
+                    context?.let { ToastUtils.showCustomToast("Ошибка при обновлении списка: ${e.message}", it) }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Ошибка загрузки членов семьи: ${error.message}", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Ошибка загрузки членов семьи: ${error.message}", it) }
             }
         })
     }
@@ -172,7 +173,6 @@ class SharedAccessFragment : Fragment() {
                 binding.familyMembersContainer.addView(container)
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Ошибка при добавлении иконки: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -212,7 +212,7 @@ class SharedAccessFragment : Fragment() {
     private fun leaveFamily() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
-            Toast.makeText(context, "Ошибка: пользователь не авторизован", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("Ошибка: пользователь не авторизован", it) }
             return
         }
 
@@ -231,10 +231,10 @@ class SharedAccessFragment : Fragment() {
                                     // Переключаемся на личный список
                                     MainActivity.CURRENT_USER_ID = currentUser.uid
                                     requireActivity().recreate()
-                                    Toast.makeText(context, "Вы вышли из семейного списка", Toast.LENGTH_SHORT).show()
+                                    context?.let { ToastUtils.showCustomToast("Вы вышли из семейного списка", it) }
                                 }
                                 .addOnFailureListener { e ->
-                                    Toast.makeText(context, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    context?.let { ToastUtils.showCustomToast("Ошибка: ${e.message}", it) }
                                 }
                             return
                         }
@@ -243,7 +243,7 @@ class SharedAccessFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Ошибка: ${error.message}", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Ошибка: ${error.message}", it) }
             }
         })
     }
@@ -261,7 +261,7 @@ class SharedAccessFragment : Fragment() {
                 if (email.isNotEmpty()) {
                     addFamilyMember(email)
                 } else {
-                    Toast.makeText(context, "Введите email", Toast.LENGTH_SHORT).show()
+                    context?.let { ToastUtils.showCustomToast("Введите email", it) }
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -272,12 +272,12 @@ class SharedAccessFragment : Fragment() {
         try {
             val currentUser = auth.currentUser
             if (currentUser == null) {
-                Toast.makeText(context, "Ошибка: пользователь не авторизован", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Ошибка: пользователь не авторизован", it) }
                 return
             }
 
             if (email == currentUser.email) {
-                Toast.makeText(context, "Нельзя добавить себя в семью", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Нельзя добавить себя в семью", it) }
                 return
             }
 
@@ -305,8 +305,8 @@ class SharedAccessFragment : Fragment() {
                                     .addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(familySnapshot: DataSnapshot) {
                                             if (familySnapshot.exists()) {
-                                                Toast.makeText(context, "Этот пользователь уже в вашей семье", Toast.LENGTH_SHORT).show()
-                                            } else {
+                                                context?.let { ToastUtils.showCustomToast("Этот пользователь уже в вашей семье", it) } }
+                                            else {
                                                 // Добавляем пользователя в семью
                                                 val familyMember = HashMap<String, Any>()
                                                 familyMember["userId"] = userId
@@ -314,17 +314,16 @@ class SharedAccessFragment : Fragment() {
 
                                                 familyRef.push().setValue(familyMember)
                                                     .addOnSuccessListener {
-                                                        Toast.makeText(context, "Пользователь добавлен в семью", Toast.LENGTH_SHORT).show()
+                                                        context?.let { ToastUtils.showCustomToast("Пользователь добавлен в семью", it) }
                                                     }
                                                     .addOnFailureListener { e ->
-                                                        Toast.makeText(context, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                        context?.let { ToastUtils.showCustomToast("Ошибка: ${e.message}", it) }
                                                     }
                                             }
                                         }
 
                                         override fun onCancelled(error: DatabaseError) {
-                                            Toast.makeText(context, "Ошибка: ${error.message}", Toast.LENGTH_SHORT).show()
-                                        }
+                                            context?.let { ToastUtils.showCustomToast("Ошибка: ${error.message}", it) } }
                                     })
                             }
                         } else {
@@ -333,18 +332,16 @@ class SharedAccessFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(context, "Ошибка: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
+                        context?.let { ToastUtils.showCustomToast("Ошибка: ${error.message}", it) } }
                 })
         } catch (e: Exception) {
-            Toast.makeText(context, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
+            context?.let { ToastUtils.showCustomToast("Ошибка: ${e.message}", it) } }
     }
 
     private fun showRemoveFamilyMemberDialog() {
         val currentUserId = auth.currentUser?.uid
         if (currentUserId == null) {
-            Toast.makeText(context, "Необходимо авторизоваться", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("Необходимо авторизоваться", it) }
             return
         }
 
@@ -363,7 +360,7 @@ class SharedAccessFragment : Fragment() {
                 }
 
                 if (familyMembers.isEmpty()) {
-                    Toast.makeText(context, "Список членов семьи пуст", Toast.LENGTH_SHORT).show()
+                    context?.let { ToastUtils.showCustomToast("Список членов семьи пуст", it) }
                     return
                 }
 
@@ -383,7 +380,7 @@ class SharedAccessFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Ошибка: ${error.message}", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Ошибка: ${error.message}", it) }
             }
         })
     }
@@ -391,7 +388,7 @@ class SharedAccessFragment : Fragment() {
     private fun removeFamilyMember(userId: String) {
         val currentUserId = auth.currentUser?.uid
         if (currentUserId == null) {
-            Toast.makeText(context, "Необходимо авторизоваться", Toast.LENGTH_SHORT).show()
+            context?.let { ToastUtils.showCustomToast("Необходимо авторизоваться", it) }
             return
         }
 
@@ -399,11 +396,10 @@ class SharedAccessFragment : Fragment() {
         
         familyRef.child(userId).removeValue()
             .addOnSuccessListener {
-                Toast.makeText(context, "Член семьи успешно удален", Toast.LENGTH_SHORT).show()
+                context?.let { ToastUtils.showCustomToast("Член семьи успешно удален", it) }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Ошибка при удалении: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+                context?.let { ToastUtils.showCustomToast("Ошибка при удалении: ${e.message}", it) } }
     }
 
     override fun onDestroyView() {
