@@ -209,9 +209,9 @@ class AuthActivity : AppCompatActivity() {
 
         // Настройка цветов текста и фона
         snackbar.setAction("OK") {}
-            .setTextColor(resources.getColor(R.color.default_text))
+            .setTextColor(resources.getColor(R.color.list_item_text))
             .setBackgroundTint(resources.getColor(R.color.background_color))
-            .setActionTextColor(resources.getColor(R.color.default_text))
+            .setActionTextColor(resources.getColor(R.color.list_item_text))
 
         // Увеличиваем количество строк текста для длинных сообщений
         val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)

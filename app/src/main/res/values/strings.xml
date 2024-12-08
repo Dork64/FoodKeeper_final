@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FoodKeeper_final</string>
+    <string name="app_name">FoodKeeper</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

@@ -21,7 +21,7 @@ object ToastUtils {
         val background = GradientDrawable()
         background.cornerRadius = 32f
         background.setColor(ContextCompat.getColor(context, R.color.background_color))
-        background.setStroke(2, ContextCompat.getColor(context, R.color.default_text))
+        background.setStroke(2, ContextCompat.getColor(context, R.color.list_item_text))
         toastView?.background = background
 
         // Получаем TextView внутри Toast и меняем его стиль
