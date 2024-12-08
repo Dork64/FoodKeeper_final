@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="36dp"
-        android:background="#FFFFFF"
+        android:background="#F0F0F0"
         android:hint="Введите имя"
         android:imeOptions="actionDone"
         android:padding="16dp"
@@ -68,16 +68,16 @@
     <Button
         android:id="@+id/btnSaveName"
         android:layout_width="wrap_content"
-        android:background="@color/background_color"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:text="Сохранить"
-        android:visibility="gone"
+        android:background="@color/background_color"
         android:backgroundTint="@color/black"
+        android:text="Сохранить"
         android:textColor="@color/white"
-        app:layout_constraintTop_toTopOf="@id/etName"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/etName"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/etName" />
 
     <!-- Email пользователя -->
     <LinearLayout
@@ -86,8 +86,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/background_color"
-        android:backgroundTint="#FFFFFF"
+        android:background="#F0F0F0"
+        android:backgroundTint="#F0F0F0"
         android:orientation="vertical"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:background="#FFFFFF"
+            android:background="#F0F0F0"
             android:text="Email"
             android:textColor="@color/gray"
             android:textSize="14sp" />
@@ -108,7 +108,7 @@
             android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:background="#F0F0F0"
             android:padding="16dp"
             android:paddingTop="8dp"
             android:textColor="@color/black"
@@ -118,8 +118,8 @@
 
     <!-- Кнопка изменения пароля -->
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnChangePassword"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -130,8 +130,8 @@
 
     <!-- Кнопка выхода -->
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnLogout"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -143,8 +143,8 @@
 
     <!-- Кнопка удаления аккаунта -->
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnDeleteAccount"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -154,6 +154,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnLogout" />
 
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="4dp"
+        android:text="Ваше имя"
+        app:layout_constraintBottom_toTopOf="@+id/etName"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
