@@ -73,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="#D5E2ED"
+                    android:textColor="@color/notification_text_description"
                     android:text="Отслеживайте все изменения в ваших списках и приложении" />
 
                 <Button
@@ -114,7 +115,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
         android:text="НАСТРОЙКА УВЕДОМЛЕНИЙ"
-        android:textColor="#5E5E5E" />
+        android:textColor="@color/notification_text" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"

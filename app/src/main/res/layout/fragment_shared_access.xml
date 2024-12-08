@@ -104,6 +104,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
+                                    android:textColor="@color/email_color"
                                     android:background="#C9E9DE"
                                     android:ellipsize="end"
                                     android:maxLines="1"
@@ -137,7 +138,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="30dp"
                 android:text="НАСТРОЙКА СОСТАВА СЕМЬИ"
-                android:textColor="#5E5E5E" />
+                android:textColor="@color/notification_text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addFamilyButton"

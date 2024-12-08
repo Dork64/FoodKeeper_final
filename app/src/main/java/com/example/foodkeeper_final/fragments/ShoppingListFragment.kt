@@ -115,13 +115,19 @@ class ShoppingListFragment<T> : Fragment() {
             ) {
                 val itemView = viewHolder.itemView
                 val icon: Drawable?
-                val background: ColorDrawable
+                var background: ColorDrawable
+
+                background = ColorDrawable(ContextCompat.getColor(requireContext(), com.google.android.material.R.color.design_default_color_background)) // Значение по умолчанию
 
                 if (dX > 0) { // Свайп вправо
-                    background = ColorDrawable(Color.parseColor("#E7FFCD"))
+                    context?.let {
+                        background = ColorDrawable(ContextCompat.getColor(it, R.color.swipe_move_color))
+                    }
                     icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_move)
                 } else { // Свайп влево
-                    background = ColorDrawable(Color.parseColor("#FFCECE"))
+                    context?.let {
+                        background = ColorDrawable(ContextCompat.getColor(it, R.color.swipe_delete_color))
+                    }
                     icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
                 }
 
