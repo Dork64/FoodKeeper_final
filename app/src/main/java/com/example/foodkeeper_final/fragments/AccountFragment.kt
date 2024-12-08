@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.foodkeeper_final.utils.ToastUtils
 
 class AccountFragment : Fragment() {
     private lateinit var ivProfileImage: ImageView
@@ -97,9 +98,9 @@ class AccountFragment : Fragment() {
             // Скрываем клавиатуру
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(etName.windowToken, 0)
-            showSuccessMessage("Имя успешно обновлено")
+            context?.let { ToastUtils.showCustomToast("Имя успешно обновлено", it) }
         } else {
-            showErrorMessage("Имя не может быть пустым")
+            context?.let { ToastUtils.showCustomToast("Имя не может быть пустым", it) }
         }
     }
 
@@ -142,22 +143,22 @@ class AccountFragment : Fragment() {
 
     private fun validatePasswordChange(currentPassword: String, newPassword: String, confirmPassword: String): Boolean {
         if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            showErrorMessage("Все поля должны быть заполнены")
+            context?.let { ToastUtils.showCustomToast("Все поля должны быть заполнены", it) }
             return false
         }
 
         if (newPassword.length < 6) {
-            showErrorMessage("Новый пароль должен содержать минимум 6 символов")
+            context?.let { ToastUtils.showCustomToast("Новый пароль должен содержать минимум 6 символов", it) }
             return false
         }
 
         if (newPassword != confirmPassword) {
-            showErrorMessage("Пароли не совпадают")
+            context?.let { ToastUtils.showCustomToast("Пароли не совпадают", it) }
             return false
         }
 
         if (newPassword == currentPassword) {
-            showErrorMessage("Новый пароль должен отличаться от текущего")
+            context?.let { ToastUtils.showCustomToast("Новый пароль должен отличаться от текущего", it) }
             return false
         }
 
@@ -174,14 +175,14 @@ class AccountFragment : Fragment() {
                     // Смена пароля
                     user.updatePassword(newPassword)
                         .addOnSuccessListener {
-                            showSuccessMessage("Пароль успешно изменен")
+                            context?.let { ToastUtils.showCustomToast("Пароль успешно изменен", it) }
                         }
                         .addOnFailureListener { e ->
-                            showErrorMessage("Ошибка при смене пароля: ${e.message}")
+                            context?.let { ToastUtils.showCustomToast("Ошибка при смене пароля: ${e.message}", it) }
                         }
                 }
                 .addOnFailureListener {
-                    showErrorMessage("Неверный текущий пароль")
+                    context?.let { ToastUtils.showCustomToast("Неверный текущий пароль", it) }
                 }
         }
     }
@@ -224,7 +225,7 @@ class AccountFragment : Fragment() {
                 if (password.isNotEmpty()) {
                     deleteAccount(password)
                 } else {
-                    showErrorMessage("Введите пароль")
+                    context?.let { ToastUtils.showCustomToast("Введите пароль", it) }
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -247,15 +248,15 @@ class AccountFragment : Fragment() {
                                     requireActivity().finish()
                                 }
                                 .addOnFailureListener { e ->
-                                    showErrorMessage("Ошибка при удалении аккаунта: ${e.message}")
+                                    context?.let { ToastUtils.showCustomToast("Ошибка при удалении аккаунта: ${e.message}", it) }
                                 }
                         }
                         .addOnFailureListener { e ->
-                            showErrorMessage("Ошибка при удалении данных: ${e.message}")
+                            context?.let { ToastUtils.showCustomToast("Ошибка при удалении данных: ${e.message}", it) }
                         }
                 }
                 .addOnFailureListener {
-                    showErrorMessage("Неверный пароль")
+                    context?.let { ToastUtils.showCustomToast("Неверный пароль", it) }
                 }
         }
     }
@@ -272,7 +273,7 @@ class AccountFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    showErrorMessage("Ошибка загрузки данных")
+                    context?.let { ToastUtils.showCustomToast("Ошибка загрузки данных", it) }
                 }
             })
         }
@@ -283,22 +284,9 @@ class AccountFragment : Fragment() {
         if (userId != null) {
             userRef.child(userId).child("name").setValue(name)
                 .addOnFailureListener {
-                    showErrorMessage("Ошибка сохранения имени")
+                    context?.let { ToastUtils.showCustomToast("Ошибка сохранения имени", it) }
                 }
         }
     }
 
-    private fun showSuccessMessage(message: String) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
-            .setBackgroundTint(resources.getColor(android.R.color.holo_green_dark))
-            .setTextColor(resources.getColor(android.R.color.white))
-            .show()
-    }
-
-    private fun showErrorMessage(message: String) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark))
-            .setTextColor(resources.getColor(android.R.color.white))
-            .show()
-    }
 }
