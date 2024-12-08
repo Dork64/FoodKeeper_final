@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/light_gray"
-    android:padding="16dp">
+    android:background="@color/background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -24,10 +24,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Помощь"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/headline_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <View
+        style="@style/viewDivider"
+        android:id="@+id/viewDividerHead"
+        app:layout_constraintBottom_toTopOf="@id/usersContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,7 +46,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@color/white"
+            android:background="@color/background_color"
             android:elevation="2dp">
 
             <TextView
@@ -62,7 +69,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Нажмите '+' в нижнем правом углу экрана холодильника, чтобы добавить новый продукт. Укажите название и срок годности."
+                android:text="Нажмите '+' снизу по центру экрана, чтобы добавить новый продукт. Все продукты предопределены в базе. Возможность добавления своего продукта появится позднее. "
                 android:layout_marginBottom="16dp"/>
 
             <TextView
@@ -90,7 +97,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Добавляйте продукты в список покупок, чтобы не забыть купить нужные товары."
+                android:text="Добавляйте продукты в список покупок, чтобы не забыть купить нужные товары. Уже по первой букве в поиске вы сможете найти интересующий вас товар. В будущем их будет больше!"
                 android:layout_marginBottom="16dp"/>
 
             <TextView
@@ -104,7 +111,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Предоставьте доступ членам семьи, чтобы вести общий список продуктов."
+                android:text="Предоставьте доступ членам семьи, чтобы вести общий список продуктов. Вам достаточно указать email зарегистрированого пользователя, чтобы он при входе смог попасть в ваш список покупок!"
                 android:layout_marginBottom="24dp"/>
         </LinearLayout>
     </ScrollView>

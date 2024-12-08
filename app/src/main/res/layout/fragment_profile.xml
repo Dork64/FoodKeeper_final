@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,8 +9,8 @@
 
     <!-- Верхняя панель -->
     <TextView
-        style="@style/AppHead"
         android:id="@+id/tvTitle"
+        style="@style/AppHead"
         android:text="Профиль"
         app:layout_constraintEnd_toEndOf="@+id/btnProfileIcon"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +45,9 @@
         android:id="@+id/btnAccount"
         style="@style/AppButton"
         android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif"
         android:text="Аккаунт"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
@@ -54,39 +55,48 @@
     <Button
         android:id="@+id/btnSettings"
         style="@style/AppButton"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
         android:text="Настройки"
-        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAccount" />
 
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnAppearance"
-        android:layout_marginTop="8dp"
+        style="@style/AppButton"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
         android:text="Внешний вид"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
 
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnSharedAccess"
-        android:layout_marginTop="8dp"
+        style="@style/AppButton"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
         android:text="Совместный доступ"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAppearance" />
 
     <Button
-        style="@style/AppButton"
         android:id="@+id/btnHelp"
-        android:layout_marginTop="8dp"
+        style="@style/AppButton"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
         android:text="Помощь"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:iconPadding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSharedAccess" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

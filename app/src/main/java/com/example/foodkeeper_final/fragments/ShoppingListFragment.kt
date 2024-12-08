@@ -118,10 +118,10 @@ class ShoppingListFragment<T> : Fragment() {
                 val background: ColorDrawable
 
                 if (dX > 0) { // Свайп вправо
-                    background = ColorDrawable(Color.GREEN)
+                    background = ColorDrawable(Color.parseColor("#E7FFCD"))
                     icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_move)
                 } else { // Свайп влево
-                    background = ColorDrawable(Color.RED)
+                    background = ColorDrawable(Color.parseColor("#FFCECE"))
                     icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
                 }
 

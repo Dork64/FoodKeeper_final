@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/light_gray">
+    android:background="@color/background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,10 +24,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Совместный доступ"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/headline_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <View
+        style="@style/viewDivider"
+        android:id="@+id/viewDividerHead"
+        app:layout_constraintBottom_toTopOf="@id/usersContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -49,13 +56,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#C9E9DE"
                     android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Пользователи"
+                        android:background="#C9E9DE"
+                        android:text="Состав семьи"
+                        android:textColor="@color/default_text"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -63,6 +73,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:background="#C9E9DE"
                         android:scrollbars="none">
 
                         <LinearLayout
@@ -75,28 +86,28 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"
+                                android:background="#C9E9DE"
                                 android:gravity="center"
+                                android:orientation="vertical"
                                 android:padding="8dp">
 
                                 <com.google.android.material.imageview.ShapeableImageView
                                     android:id="@+id/currentUserIcon"
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
-                                    android:background="@color/accent_color"
                                     android:padding="12dp"
                                     app:shapeAppearanceOverlay="@style/CircleImageView"
-                                    app:srcCompat="@drawable/ic_profile"
-                                    android:tint="@android:color/white"/>
+                                    app:srcCompat="@drawable/ic_profile" />
 
                                 <TextView
                                     android:id="@+id/currentUserEmail"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
-                                    android:textSize="12sp"
+                                    android:background="#C9E9DE"
+                                    android:ellipsize="end"
                                     android:maxLines="1"
-                                    android:ellipsize="end"/>
+                                    android:textSize="12sp" />
                             </LinearLayout>
 
                             <!-- Контейнер для членов семьи -->
@@ -104,7 +115,8 @@
                                 android:id="@+id/familyMembersContainer"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"/>
+                                android:background="#C9E9DE"
+                                android:orientation="horizontal" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -119,21 +131,34 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="60dp"
+                android:text="НАСТРОЙКА СОСТАВА СЕМЬИ"
+                android:textColor="#5E5E5E" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addFamilyButton"
+                style="@style/AppButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
                 android:text="Добавить члена семьи"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeFamilyButton"
+                style="@style/AppButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="sans-serif"
                 android:text="Удалить члена семьи"
-                android:textColor="@android:color/holo_red_dark"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                android:textColor="@android:color/holo_red_dark" />
 
         </LinearLayout>
     </ScrollView>

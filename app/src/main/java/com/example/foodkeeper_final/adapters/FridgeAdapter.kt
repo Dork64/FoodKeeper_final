@@ -45,7 +45,7 @@ class FridgeAdapter(
             val quantityText = if (product.quantity.isNotEmpty() && product.unit.isNotEmpty()) {
                 "${product.quantity} ${product.unit}"
             } else {
-                "Количество не указано"
+                "1 шт"
             }
             quantityInfo.text = quantityText
 
