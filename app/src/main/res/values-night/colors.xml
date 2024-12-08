@@ -25,12 +25,12 @@
     <color name="swipe_delete_color">#9C0606</color> <!-- Текст элементов списка -->
 
     <!-- Цвета для нижней навигации -->
-    <color name="nav_icon_inactive">#78909C</color> <!-- Неактивные иконки -->
+    <color name="nav_icon_inactive">#EBFFEE</color> <!-- Неактивные иконки -->
     <color name="shop_item_color">#2E7D32</color> <!-- Активные иконки -->
     <color name="accent_color">#2E7D32</color> <!-- Активные иконки -->
 
 
-    <color name="nav_icon_active">#2E7D32</color> <!-- Активные иконки -->
+    <color name="nav_icon_active">#EBFFEE</color> <!-- Активные иконки -->
 
     <!-- Цвета для переключателей -->
     <color name="switch_track_on">#81C784</color> <!-- Трек включенного переключателя -->

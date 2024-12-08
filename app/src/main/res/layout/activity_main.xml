@@ -19,12 +19,12 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="?attr/colorSurface"
-        app:itemIconTint="@color/nav_icon_inactive"
-        app:itemTextColor="@color/nav_icon_inactive"
         app:itemActiveIndicatorStyle="@null"
+        app:itemIconTint="@color/nav_icon_inactive"
         app:itemRippleColor="@android:color/transparent"
+        app:itemTextColor="@color/nav_icon_inactive"
         app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>
