@@ -192,21 +192,20 @@ class FridgeFragment<T> : Fragment() {
         fridgeList.clear()
         val prefs = requireContext().getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
         val autoSort = prefs.getBoolean("auto_sort", false)
-        if (category == "Все") {
-            fridgeList.addAll(originalFridgeList) // Возвращаем все элементы
-            if (autoSort) {
-                Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
-                fridgeList.sortBy { it.expiryDays }
-                transferExpiredItems()
-            }
-        } else {
-            fridgeList.addAll(originalFridgeList.filter { it.category == category }) // Фильтруем по категории
-            if (autoSort) {
-                Log.d("FridgeFragment", "Сортировка по срокам годности: ${fridgeList.map { it.expiryDays }}")
-                fridgeList.sortBy { it.expiryDays }
-                transferExpiredItems()
-            }
+
+        if (autoSort) {
+            originalFridgeList.sortBy { it.expiryDays }
         }
+
+        fridgeList.addAll(
+            if (category == "Все") {
+                originalFridgeList
+            } else {
+                originalFridgeList.filter { it.category == category }
+            }
+        )
+
+        transferExpiredItems()
         adapter.notifyDataSetChanged() // Обновляем адаптер
     }
 
