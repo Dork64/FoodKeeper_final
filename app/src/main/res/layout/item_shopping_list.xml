@@ -10,7 +10,6 @@
         android:id="@+id/ivItemIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
         android:background="#F4FDF2"
         android:contentDescription="Иконка элемента"
         android:src="@drawable/ic_add"

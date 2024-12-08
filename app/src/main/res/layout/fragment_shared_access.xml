@@ -144,21 +144,22 @@
                 android:id="@+id/addFamilyButton"
                 style="@style/AppButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="65dp"
                 android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif"
                 android:text="Добавить члена семьи"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeFamilyButton"
                 style="@style/AppButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="65dp"
                 android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif"
                 android:text="Удалить члена семьи"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@android:color/holo_red_dark" />
 
         </LinearLayout>

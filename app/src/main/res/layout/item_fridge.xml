@@ -9,12 +9,12 @@
     <!-- Изображение продукта (кликабельное) -->
     <ImageView
         android:id="@+id/productImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center"
         android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="Product Image" />
+        android:contentDescription="Product Image"
+        android:focusable="true" />
 
     <!-- Название продукта -->
     <TextView
