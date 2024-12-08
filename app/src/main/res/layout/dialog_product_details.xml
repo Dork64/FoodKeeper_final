@@ -31,17 +31,20 @@
         android:id="@+id/btnEditProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/button_dialog"
         android:text="Редактировать" />
 
     <Button
         android:id="@+id/btnMoveToShoppingList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/button_dialog"
         android:text="Переместить" />
 
     <Button
         android:id="@+id/btnDeleteProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/button_dialog"
         android:text="Удалить" />
 </LinearLayout>

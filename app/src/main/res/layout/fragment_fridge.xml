@@ -74,4 +74,18 @@
             android:background="#9CD6C5"
             android:src="@drawable/ic_add" />
     </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinnerCategory"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerCategory"
+        app:layout_constraintTop_toTopOf="@+id/spinnerCategory"
+        app:layout_constraintVertical_bias="0.6"
+        app:srcCompat="@drawable/ic_drop" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

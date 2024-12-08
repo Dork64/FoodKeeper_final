@@ -17,17 +17,26 @@
             android:layout_height="wrap_content"
             android:text="Добро пожаловать!"
             android:textSize="24sp"
+            android:textColor="@color/headline_text"
             android:textStyle="bold"
+            android:fontFamily="@font/poppins_regular"
             android:layout_marginBottom="16dp"
             android:gravity="center" />
 
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="120dp"
-            android:src="@drawable/ic_logo"
             android:layout_marginBottom="24dp"
-            android:contentDescription="Логотип" />
+            android:background="#F4FDF2"
+            android:contentDescription="Логотип"
+            android:src="@drawable/ic_logo" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email" />
 
         <EditText
             android:id="@+id/etEmail"
@@ -37,6 +46,12 @@
             android:inputType="textEmailAddress"
             android:layout_marginBottom="16dp"
             android:padding="12dp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пароль" />
 
         <EditText
             android:id="@+id/etPassword"
@@ -48,6 +63,7 @@
             android:padding="12dp" />
 
         <Button
+            style="@style/AppButton"
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,20 +81,11 @@
             android:text="Забыли пароль?"
             android:textColor="@color/black" />
 
-        <Button
-            android:id="@+id/btnGoogleSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#A0B8C2"
-            android:drawableStart="@drawable/ic_google"
-            android:text="Продолжить с Google"
-            android:textColor="@color/black" />
-
         <TextView
             android:id="@+id/tvNoAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
             android:layout_marginEnd="4dp"
             android:text="Нет аккаунта?"
             android:textColor="@color/black" />
@@ -89,6 +96,7 @@
             android:layout_height="wrap_content"
             android:text="Зарегистрироваться"
             android:textColor="@color/black"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

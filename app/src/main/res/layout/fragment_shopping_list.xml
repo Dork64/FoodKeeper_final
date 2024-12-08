@@ -7,12 +7,12 @@
 
     <!-- Заголовок -->
     <TextView
-        style="@style/AppHead"
         android:id="@+id/tvTitle"
+        style="@style/AppHead"
         android:text="Список покупок"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         style="@style/viewDivider"
@@ -23,12 +23,11 @@
 
     <Spinner
         android:id="@+id/spinnerCategory"
-        android:layout_width="150dp"
+        android:layout_width="154dp"
         android:layout_height="39dp"
         android:layout_gravity="end"
         android:layout_margin="8dp"
         android:entries="@array/category_list"
-        android:popupBackground="@drawable/ic_profile"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="@+id/tvTitle"
@@ -73,5 +72,18 @@
             android:background="#9CD6C5"
             android:src="@drawable/ic_add" />
     </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinnerCategory"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerCategory"
+        app:layout_constraintTop_toTopOf="@+id/spinnerCategory"
+        app:layout_constraintVertical_bias="0.6"
+        app:srcCompat="@drawable/ic_drop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

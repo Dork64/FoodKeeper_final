@@ -52,6 +52,7 @@
         android:layout_marginTop="16dp"
         android:padding="12dp"
         android:text="Выберите дату"
+        android:textColor="@color/button_dialog"
         android:textSize="16sp" />
 
 </LinearLayout>

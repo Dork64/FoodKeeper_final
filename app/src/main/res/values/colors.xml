@@ -4,27 +4,32 @@
     <color name="background_color">#F6FFF4</color> <!-- Светло-зеленый фон -->
     <color name="surface_color">#E8F5E9</color> <!-- Фон для карточек -->
     <color name="headline_text">#025429</color> <!-- Темно-зеленый для заголовков -->
-    <color name="primary_text">#1B5E20</color> <!-- Основной текст -->
+    <color name="primary_text">#000000</color> <!-- Основной текст -->
     <color name="secondary_text">#2E7D32</color> <!-- Вторичный текст -->
     <color name="default_text">#000000</color> <!-- Вторичный текст -->
     <color name="button_text">#FFFFFF</color> <!-- Текст на кнопках -->
     <color name="button_background">#A9E1D1</color> <!-- Фон кнопок -->
     <color name="button_stroke">#4C8860</color> <!-- Фон кнопок -->
+    <color name="button_dialog">#000000</color> <!-- Фон кнопок -->
     <color name="button_background_secondary">#9DD8C7</color> <!-- Фон вторичных кнопок -->
-
+    <color name="help_text">#000000</color>
+    <color name="email_color">#275C4A</color>
+    <color name="ic_back_color">#02543C</color>
     <color name="divider_color">#02542D</color> <!-- Фон разделительных линий -->
     
     <!-- Цвета для элементов списка -->
     <color name="list_item_background">#A7EBC9</color> <!-- Фон элементов списка -->
-    <color name="list_item_text">#1B5E20</color> <!-- Текст элементов списка -->
+    <color name="list_item_text">#000000</color> <!-- Текст элементов списка -->
+    <color name="swipe_move_color">#E7FFCD</color> <!-- Текст элементов списка -->
+    <color name="swipe_delete_color">#FFCECE</color> <!-- Текст элементов списка -->
     
     <!-- Цвета для нижней навигации -->
-    <color name="nav_icon_inactive">#78909C</color> <!-- Неактивные иконки -->
+    <color name="nav_icon_inactive">#2E7D32</color> <!-- Неактивные иконки -->
     <color name="shop_item_color">#2E7D32</color> <!-- Активные иконки -->
-    <color name="accent_color">#2E7D32</color> <!-- Активные иконки -->
+    <color name="accent_color">#000000</color> <!-- Активные иконки -->
 
 
-    <color name="nav_icon_active">#2E7D32</color> <!-- Активные иконки -->
+    <color name="nav_icon_active">#137D5E</color> <!-- Активные иконки -->
 
     <!-- Цвета для переключателей -->
     <color name="switch_track_on">#81C784</color> <!-- Трек включенного переключателя -->
@@ -32,7 +37,8 @@
     
     <!-- Цвета для уведомлений -->
     <color name="notification_background">#E8F5E9</color> <!-- Фон уведомлений -->
-    <color name="notification_text">#1B5E20</color> <!-- Текст уведомлений -->
+    <color name="notification_text">#5E5E5E</color> <!-- Текст уведомлений -->
+    <color name="notification_text_description">#757575</color> <!-- Текст уведомлений -->
     
     <!-- Базовые цвета -->
     <color name="black">#FF000000</color>

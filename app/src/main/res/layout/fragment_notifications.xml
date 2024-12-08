@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/light_gray">
+    android:background="@color/background_color">
 
-    <!-- Верхняя панель с кнопкой назад и заголовком -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,110 +24,132 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Уведомления"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/headline_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <View
+        style="@style/viewDivider"
+        android:id="@+id/viewDividerHead"
+        app:layout_constraintBottom_toTopOf="@id/usersContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Карточка "Ничего не упускайте!" -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        android:background="#D5E2ED"
+        app:cardBackgroundColor="#D5E2ED">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#D5E2ED"
             android:orientation="horizontal"
             android:padding="16dp">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_tree"
-                android:layout_marginEnd="16dp"/>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="#D5E2ED"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#D5E2ED"
                     android:text="Ничего не упускайте!"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Отслеживайте все изменения в ваших списках"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="16dp"
+                    android:background="#D5E2ED"
+                    android:textColor="@color/notification_text_description"
+                    android:text="Отслеживайте все изменения в ваших списках и приложении" />
 
                 <Button
                     android:id="@+id/btnEnableNotifications"
-                    android:layout_width="wrap_content"
+                    style="@style/AppButton"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="bottom|center"
+                    android:text="ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ" />
             </LinearLayout>
+
+            <ImageView
+                android:layout_width="106dp"
+                android:layout_height="153dp"
+                android:layout_gravity="end"
+                android:background="#D5E2ED"
+                android:src="@drawable/ic_bro" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Настройки уведомлений -->
+
     <Button
         android:id="@+id/btnTestNotifications"
-        android:layout_width="match_parent"
+        style="@style/AppButton"
+        android:layout_width="332dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
+        android:gravity="start|center_horizontal"
         android:text="Проверить уведомления"
         android:textAllCaps="false" />
 
-    <!-- Настройки уведомлений -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
         android:text="НАСТРОЙКА УВЕДОМЛЕНИЙ"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:textColor="@color/notification_text" />
 
-    <!-- Push-уведомления -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white"
-        android:padding="16dp">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="1000dp"
+        app:cardCornerRadius="12dp"
+        app:strokeColor="@color/button_stroke"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@color/button_background"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchPushNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Push-уведомления"
+                android:textColor="@color/default_text" />
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Push-уведомления"
-                android:textSize="16sp"/>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchPushNotifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_marginTop="4dp"
+                android:background="@color/button_background"
+                android:text="Получать push-уведомления на Ваше устройство при приближении истечения срока годности"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="12sp" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Получать push-уведомления на Ваше устройство при приближении истечения срока годности"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"/>
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
