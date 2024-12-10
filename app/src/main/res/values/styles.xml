@@ -16,11 +16,13 @@
 
         <!-- Material Design 3 attributes -->
         <item name="colorPrimaryContainer">@color/list_item_background</item>
+        <item name="android:statusBarColor">@color/black</item>
         <item name="colorOnPrimaryContainer">@color/list_item_text</item>
         <item name="colorSecondaryContainer">@color/notification_background</item>
         <item name="colorOnSecondaryContainer">@color/notification_text</item>
         <item name="colorSurfaceVariant">@color/surface_color</item>
         <item name="colorOnSurfaceVariant">@color/secondary_text</item>
+        <item name="buttonBarButtonStyle">@style/DialogButton</item>
 
         <!-- Switch colors -->
         <item name="colorControlActivated">@color/switch_thumb_on</item>
@@ -45,6 +47,11 @@
         <item name="android:fontFamily">@font/poppins_regular</item>
         <item name="android:textColor">@color/headline_text</item>
     </style>
+
+    <style name="DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/list_item_text</item>
+    </style>
+
 
     <style name="AppButton">
         <item name="android:layout_width">0dp</item>

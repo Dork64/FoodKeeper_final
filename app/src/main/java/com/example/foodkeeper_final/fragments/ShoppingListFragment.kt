@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -39,7 +38,6 @@ import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 import com.example.foodkeeper_final.utils.Constants
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -80,7 +78,7 @@ class ShoppingListFragment<T> : Fragment() {
             shoppingList,
             onEdit = { item -> showEditItemDialog(item) }, // Редактирование
             onDelete = { item, position -> deleteShoppingItem(item, position) }, // Удаление
-            onMove = { item, position -> moveToFridge(item, position) }
+            onMove = { item, position -> showFreshnessDialog(item, position) }
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -101,7 +99,7 @@ class ShoppingListFragment<T> : Fragment() {
                     val item = shoppingList[position]
 
                     when (direction) {
-                        ItemTouchHelper.RIGHT -> moveToFridge(item, position) // Перемещение в холодильник
+                        ItemTouchHelper.RIGHT -> showFreshnessDialog(item, position) // Перемещение в холодильник
                         ItemTouchHelper.LEFT -> deleteShoppingItem(item, position) // Удаление элемента
                     }
                 }
@@ -369,7 +367,7 @@ class ShoppingListFragment<T> : Fragment() {
                 // Ищем среди всех документов
                 for (document in documents) {
                     val product = document.toObject(ShoppingItem::class.java)
-                    val productNameInDoc = product.name?.lowercase()  // Предполагаем, что у объекта ShoppingItem есть поле name
+                    val productNameInDoc = product.name?.lowercase()
 
                     if (productNameInDoc == lowerCaseProductName) {
                         callback(product)  // Если нашли продукт с нужным названием, возвращаем его
@@ -383,9 +381,6 @@ class ShoppingListFragment<T> : Fragment() {
                 callback(null)  // В случае ошибки тоже возвращаем null
             }
     }
-
-
-
 
     private fun saveRecentProducts() {
         val recentProductsRef = databaseReference.parent?.child("recentProducts")
@@ -419,14 +414,22 @@ class ShoppingListFragment<T> : Fragment() {
         firestore.collection("products")
             .get()
             .addOnSuccessListener { documents ->
-                val suggestions = mutableListOf<ShoppingItem>()
+                val exactMatches = mutableListOf<ShoppingItem>()
+                val partialMatches = mutableListOf<ShoppingItem>()
 
                 for (document in documents) {
                     val product = document.toObject(ShoppingItem::class.java)
-                    if (product != null && product.name.toLowerCase().startsWith(query)) { // Точное совпадение первой буквы
-                        suggestions.add(product)
+                    if (product != null) {
+                        if (product.name.toLowerCase().startsWith(query)) {
+                            exactMatches.add(product)
+                        } else if (product.name.toLowerCase().contains(query)) {
+                            partialMatches.add(product)
+                        }
                     }
                 }
+
+                val suggestions = if (exactMatches.isNotEmpty()) exactMatches else partialMatches
+
                 callback(suggestions)
             }
             .addOnFailureListener {
@@ -450,7 +453,7 @@ class ShoppingListFragment<T> : Fragment() {
             }
     }
 
-    // Удаление элемента из списка м
+    // Удаление элемента из списка
     private fun deleteShoppingItem(item: ShoppingItem, position: Int) {
         // Проверка, чтобы избежать выхода за пределы массива
         if (position >= shoppingList.size || position < 0) {
@@ -550,11 +553,7 @@ class ShoppingListFragment<T> : Fragment() {
             }
     }
 
-    // Функция для перемещения элемента в холодильник
-    private fun moveToFridge(item: ShoppingItem, position: Int) {
-            showFreshnessDialog(item, position)
-    }
-
+    // Функция для перемещения элементов в холодильник
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showFreshnessDialog(item: ShoppingItem, position: Int) {
         val dialogView = LayoutInflater.from(requireContext())
@@ -728,5 +727,4 @@ class ShoppingListFragment<T> : Fragment() {
 
         toast.show()
     }
-
 }

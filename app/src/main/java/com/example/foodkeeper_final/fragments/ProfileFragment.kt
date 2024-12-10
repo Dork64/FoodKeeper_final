@@ -77,7 +77,6 @@ class ProfileFragment : Fragment() {
             }
             dialog.dismiss()
         }
-
         dialog.show()
     }
 }

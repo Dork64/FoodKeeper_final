@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.example.foodkeeper_final.R
@@ -48,7 +47,6 @@ class SettingsFragment : Fragment() {
         view.findViewById<View>(R.id.languageCard).setOnClickListener {
             context?.let { ToastUtils.showCustomToast("В данной версии смена языка не предусмотрена", it) }
         }
-
         return view
     }
 

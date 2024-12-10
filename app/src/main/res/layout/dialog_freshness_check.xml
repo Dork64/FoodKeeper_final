@@ -85,6 +85,6 @@
             android:textColor="@color/button_dialog"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
-            android:text="Перенести" />
+            android:text="Добавить" />
     </LinearLayout>
 </LinearLayout>

@@ -10,8 +10,13 @@ import com.example.foodkeeper_final.R
 // Утилитный класс для Toast
 object ToastUtils {
 
+    private var currentToast: Toast? = null
+
     fun showCustomToast(message: String, context: Context) {
-        // Создаём стандартный Toast
+        // Отменяем предыдущий Toast, если он существует
+        currentToast?.cancel()
+
+        // Создаём новый Toast
         val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
 
         // Получаем view Toast
@@ -33,6 +38,8 @@ object ToastUtils {
         textBackground.setColor(ContextCompat.getColor(context, R.color.background_color))
         toastText?.background = textBackground
 
+        // Показываем новый Toast и сохраняем его в currentToast
         toast.show()
+        currentToast = toast
     }
 }

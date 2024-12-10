@@ -20,7 +20,6 @@ import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,7 +32,6 @@ import com.example.foodkeeper_final.models.ShoppingItem
 import com.example.foodkeeper_final.utils.Constants
 import com.example.foodkeeper_final.utils.ToastUtils
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -42,9 +40,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
@@ -109,7 +105,6 @@ class FridgeFragment<T> : Fragment() {
         fabAddItem.setOnClickListener {
             showAddItemDialog()
         }
-
 
         return view
     }
@@ -216,7 +211,6 @@ class FridgeFragment<T> : Fragment() {
             context?.let { ToastUtils.showCustomToast("Ваш холодильник пуст. Добавьте товары!", it) }
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showAddItemDialog() {
@@ -354,14 +348,22 @@ class FridgeFragment<T> : Fragment() {
         firestore.collection("products")
             .get()
             .addOnSuccessListener { documents ->
-                val suggestions = mutableListOf<FridgeItem>()
+                val exactMatches = mutableListOf<FridgeItem>()
+                val partialMatches = mutableListOf<FridgeItem>()
 
                 for (document in documents) {
                     val product = document.toObject(FridgeItem::class.java)
-                    if (product != null && product.name.toLowerCase().startsWith(query)) { // Точное совпадение первой буквы
-                        suggestions.add(product)
+                    if (product != null) {
+                        if (product.name.toLowerCase().startsWith(query)) {
+                            exactMatches.add(product)
+                        } else if (product.name.toLowerCase().contains(query)) {
+                            partialMatches.add(product)
+                        }
                     }
                 }
+
+                val suggestions = if (exactMatches.isNotEmpty()) exactMatches else partialMatches
+
                 callback(suggestions)
             }
             .addOnFailureListener {
@@ -469,7 +471,6 @@ class FridgeFragment<T> : Fragment() {
 
         // Настраиваем выбор даты
         datePickerButton.setOnClickListener {
-            val currentCalendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
@@ -519,7 +520,6 @@ class FridgeFragment<T> : Fragment() {
 
         dialog.show()
     }
-
 
     private fun updateFridgeItem(item: FridgeItem) {
         val itemRef = databaseReference.child(item.id) // Ссылка на элемент в Firebase
@@ -591,7 +591,6 @@ class FridgeFragment<T> : Fragment() {
             return
         }
 
-
         // Создаем объект ShoppingItem
         val shoppingItem = ShoppingItem(
             id = item.id,
@@ -627,7 +626,6 @@ class FridgeFragment<T> : Fragment() {
                 context?.let { ToastUtils.showCustomToast("Ошибка при добавлении в список покупок", it) }
             }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showFreshnessDialog(item: FridgeItem) {

@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import com.example.foodkeeper_final.AuthActivity
 import com.example.foodkeeper_final.R
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*

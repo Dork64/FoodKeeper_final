@@ -10,11 +10,6 @@ import com.example.foodkeeper_final.MainActivity
 import com.example.foodkeeper_final.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class ExpirationCheckWorker(
     private val context: Context,

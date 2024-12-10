@@ -5,11 +5,12 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Patterns
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foodkeeper_final.databinding.ActivityAuthBinding
-import com.example.foodkeeper_final.fragments.ShoppingListFragment
 import com.example.foodkeeper_final.models.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -138,11 +139,12 @@ class AuthActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         progressDialog.dismiss()
                         if (task.isSuccessful) {
-                            Snackbar.make(binding.root, "Регистрация успешна", Snackbar.LENGTH_SHORT).show()
                             addUserToDatabase()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
                             showErrorSnackbar("Вы успешно зарегистрировались! Войдите с введенными ранее данными")
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            }, 2000)
                         } else {
                             when (task.exception) {
                                 is FirebaseAuthWeakPasswordException ->

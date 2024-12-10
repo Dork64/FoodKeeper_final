@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodkeeper_final.R
-import com.example.foodkeeper_final.models.FridgeItem
 import com.example.foodkeeper_final.models.ShoppingItem
 
 class ShoppingListAdapter(
@@ -51,7 +50,7 @@ class ShoppingListAdapter(
             val quantityText = if (item.quantity.isNotEmpty() && item.unit.isNotEmpty()) {
                 "${item.quantity} ${item.unit}"
             } else {
-                "Количество не указано"
+                "1 шт"
             }
             tvQuantity.text = quantityText
 
